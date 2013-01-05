@@ -24,10 +24,10 @@ import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.Matchers.{isA, anyString, eq => isEqualTo}
 import net.badgerclaw.onegameamonth.january.graphics.RenderContext
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.Texture
 import net.badgerclaw.onegameamonth.january.ResourceFactory
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+
+import com.badlogic.gdx.graphics.g2d._
+import com.badlogic.gdx.graphics._
 
 class TitleViewSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   val texture = mock[Texture]
@@ -42,8 +42,7 @@ class TitleViewSpec extends WordSpec with ShouldMatchers with MockitoSugar {
         
         val view = new TitleView(factory)
         
-        verify(factory).loadTexture("graphics/title.png")
-        
+        verify(factory).loadTexture("graphics/title.png")        
       }
     }
     "rendered" should {
@@ -57,6 +56,7 @@ class TitleViewSpec extends WordSpec with ShouldMatchers with MockitoSugar {
         val batch = mock[SpriteBatch]
         
         when(context.batch).thenReturn(batch)
+        when(context.hud).thenReturn(mock[OrthographicCamera])
         
         view.render(context)
 

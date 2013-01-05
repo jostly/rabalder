@@ -29,25 +29,18 @@ class TitleView(factory: ResourceFactory) extends View {
   val textureRegion = new TextureRegion(texture, texture.getWidth(), texture.getHeight())
   textureRegion.flip(false, true)
   
-  val font = new BitmapFont(true)
-  
   override def render(context: RenderContext) {
+    context.batch.setProjectionMatrix(context.hud.combined)
+
     context.batch.begin()
     
     context.batch.draw(textureRegion, 0f, 0f)
-    
-    context.batch.setProjectionMatrix(context.hud.combined)
-
-    font.draw(context.batch, "[Title page here]", 10, 10)
-    
-    font.draw(context.batch, "Press any key to begin", 10, 60)
 
     context.batch.end()    
   }
   
   override def dispose() {
     texture.dispose()
-    font.dispose()    
   }
 
 }

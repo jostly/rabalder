@@ -25,10 +25,10 @@ object Main extends App {
   
   val config = new LwjglApplicationConfiguration()
   
-  config.title = "Braver Run"
+  config.title = "Rabalder"
   config.useGL20 = true
-  config.width = 800
-  config.height = 600
+  config.width = 640
+  config.height = 480
   config.fullscreen = false
   config.forceExit = false // Get rid of that pesky returncode -1
 
