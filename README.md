@@ -21,7 +21,7 @@ In order to build the game from these sources, you need
 
 Unpack the libgdx zip and place the jar-files in lib/, see lib/README
 
-Use the ´´´assembly´´´ task in SBT to assemble a jar-file with everything needed to run the game.
+Use the ```assembly``` task in SBT to assemble a jar-file with everything needed to run the game.
 
 
 Copyrights
