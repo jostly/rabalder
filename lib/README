@@ -1,0 +1,11 @@
+Needs the following files from libgdx 0.9.7 (or later, as long as the API is compatible)
+
+gdx.jar
+gdx-natives.jar
+gdx-backend-lwjgl.jar
+gdx-backend-lwjgl-natives.jar
+
+Recommended, but not necessary
+
+gdx-sources.jar
+
