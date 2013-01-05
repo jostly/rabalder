@@ -20,8 +20,14 @@ package net.badgerclaw.onegameamonth.january.level
 
 import scala.annotation.tailrec
 import scala.util.Random
+import event.{Move => MoveEvent,Explode => ExplodeEvent, _}
+import tile._
 
-class Level(data: Array[Tile]) {
+trait ReadOnlyLevel {
+  def get(x: Int, y: Int): Tile
+}
+
+class Level(data: Array[Tile]) extends ReadOnlyLevel {
   def this() = this(Level.empty)
   
   val width = 40
@@ -80,7 +86,7 @@ class Level(data: Array[Tile]) {
     def doMove(): Option[Tile] = {
 	  set(newpos._1, newpos._2)(get(position._1, position._2))
 	  set(position._1, position._2)(Space)
-	  events = Remove(target, PlayerCharacter) :: Move(PlayerCharacter, target) :: events 
+	  events = Remove(target, PlayerCharacter) :: MoveEvent(PlayerCharacter, target) :: events 
 	  Some(target)      
     }
     def dontMove: Option[Tile] = None
@@ -104,63 +110,89 @@ class Level(data: Array[Tile]) {
   }
   
   def tick() {
+    var exclude = Set.empty[(Int, Int)]
     for (x <- 1 until width-1) {
-      for (y <- 1 until height-1) {
+      for (y <- 1 until height-1 if (!exclude.contains((x,y)))) {
         get(x,y) match {
-          case tile: CanFall => get(x, y+1) match {
-            case Space => {
-              set(x, y+1)(tile.falling)
+          case action: ActionTile => action.act(x, y, this).foreach( {
+            case Move(d) => {
+              set(x + d.dx, y + d.dy)(get(x, y))
               set(x, y)(Space)
+              exclude += ((x + d.dx, y + d.dy)) // Mark the moved-to position as already scanned
             }
-            case r: Rounded => {
-              if (get(x-1, y) == Space && get(x-1, y+1) == Space) {
-            	set(x-1, y)(tile.falling)
-            	set(x, y)(Space)
-              } else if (get(x+1, y) == Space && get(x+1, y+1) == Space) {
-            	set(x+1, y)(tile.falling)
-            	set(x, y)(Space)                  
-              } else if (tile.isFalling) {
-                set(x, y)(tile.stationary)                
-              }
-              events = Hit(tile, r) :: events
-            }
-            case PlayerCharacter if (tile.isFalling) => {
-              for (dx <- x-1 to x+1) {
-                for (dy <- y to y+2) {
-                  get(dx,dy) match {
-                    case _: Permanent =>
-                    case _ => set(dx,dy)(Explosion(0)) 
-                  }
-                  
+            case Become(what) => set(x, y)(what)
+            case Explode(direction, remains) => {
+              for (dx <- -1 to 1) {
+                for (dy <- -1 to 1) {
+                  set(x + direction.dx + dx, y + direction.dy + dy)(Explosion(1, remains))
                 }
               }
-              finished = true
-              events = Explode(PlayerCharacter, Space) :: Hit(tile, PlayerCharacter) :: events
             }
-            case t => if (tile.isFalling) {
-              set(x, y)(tile.stationary)
-              events = Hit(tile, t) :: events
-            }
-          }
-          case PreExit if (diamondsTaken >= diamondsNeeded) => { 
-            set(x, y)(Exit)
-            events = Transform(PreExit, Exit) :: events
-          }
+            case _ =>
+          })
           case _ =>
         }
       }
     }
     
-    for (i <- 0 until data.length) {
-      data(i) = data(i) match {
-        case scanned: Scanned => scanned.reset
-        case animated: Animated => animated.next
-        case t: Tile => t
-      }
-    }    
+    
+//    for (x <- 1 until width-1) {
+//      for (y <- 1 until height-1) {
+//        get(x,y) match {
+//          case tile: CanFall => get(x, y+1) match {
+//            case Space => {
+//              set(x, y+1)(tile.falling)
+//              set(x, y)(Space)
+//            }
+//            case r: Rounded => {
+//              if (get(x-1, y) == Space && get(x-1, y+1) == Space) {
+//            	set(x-1, y)(tile.falling)
+//            	set(x, y)(Space)
+//              } else if (get(x+1, y) == Space && get(x+1, y+1) == Space) {
+//            	set(x+1, y)(tile.falling)
+//            	set(x, y)(Space)                  
+//              } else if (tile.isFalling) {
+//                set(x, y)(tile.stationary)                
+//              }
+//              events = Hit(tile, r) :: events
+//            }
+//            case PlayerCharacter if (tile.isFalling) => {
+//              for (dx <- x-1 to x+1) {
+//                for (dy <- y to y+2) {
+//                  get(dx,dy) match {
+//                    case _: Permanent =>
+//                    case _ => set(dx,dy)(Explosion(0)) 
+//                  }
+//                  
+//                }
+//              }
+//              finished = true
+//              events = Explode(PlayerCharacter, Space) :: Hit(tile, PlayerCharacter) :: events
+//            }
+//            case t => if (tile.isFalling) {
+//              set(x, y)(tile.stationary)
+//              events = Hit(tile, t) :: events
+//            }
+//          }
+//          case PreExit if (diamondsTaken >= diamondsNeeded) => { 
+//            set(x, y)(Exit)
+//            events = Transform(PreExit, Exit) :: events
+//          }
+//          case _ =>
+//        }
+//      }
+//    }
+//    
+//    for (i <- 0 until data.length) {
+//      data(i) = data(i) match {
+//        case scanned: Scanned => scanned.reset
+//        case animated: Animated => animated.next
+//        case t: Tile => t
+//      }
+//    }    
   }
   
-  override def toString = {
+  def toDebugString = {
     def split(list: List[String], size: Int, accum: List[List[String]]): List[List[String]] = list.splitAt(width) match {
       case (Nil, Nil) => accum
       case (a, b) => split(b, size, accum :+ a)
@@ -200,6 +232,7 @@ object Level {
     case 'r' => Boulder
     case 'X' => PlayerCharacter
     case 'd' => Diamond
+    case 'B' => Butterfly
     case 'P' => PreExit
     case _ => Space
   }
@@ -210,11 +243,12 @@ object Level {
     case Dirt => "."
     case Boulder => "r"
     case FallingBoulder => "R"
-    case PreExit => "x"
-    case Exit => "X"
+    case PreExit => "P"
+    case Exit => "∏"
     case Diamond => "d"
     case FallingDiamond => "D"
-    case PlayerCharacter => "P"
+    case Butterfly => "B"
+    case PlayerCharacter => "X"
     case Space => " "
     case _ => "?"
   }

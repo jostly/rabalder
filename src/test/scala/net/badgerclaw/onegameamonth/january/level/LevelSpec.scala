@@ -22,6 +22,9 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.WordSpec
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
+import org.mockito.Matchers.{isA, anyInt}
+
+import tile._
 
 class LevelSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   val cave1 = """
@@ -143,145 +146,143 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
     }
   }
   "tick()" should {
-    "let a boulder fall through empty space" in {
+    trait anActionTile extends SpaceTile with ActionTile
+    
+    "call the act method on ActionTiles" in {
       val level = new Level()
-      level.set(5,5)(Boulder)
+      val tile = mock[anActionTile]
+      when(tile.act(5, 5, level)).thenReturn(List())
+      
+      level.set(5,5)(tile)
       
       level.tick()
       
-      level.get(5,6) should be (FallingBoulder)
-      level.get(5,5) should be (Space)
+      verify(tile).act(5, 5, level)      
     }
-    "let a diamond fall through empty space" in {
+    "respond to Move(Left) action" in {
       val level = new Level()
-      level.set(5,5)(Diamond)
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Move(Left)))
+      
+      level.set(2,2)(tile)
       
       level.tick()
       
-      level.get(5,6) should be (FallingDiamond)
-      level.get(5,5) should be (Space)
+      level.get(1, 2) should be (tile)
+      level.get(2, 2) should be (Space)
     }
-    "let a falling boulder come to rest on dirt" in {
+    "respond to Move(Right) action" in {
       val level = new Level()
-      level.set(5,5)(Boulder)
-      level.set(5,7)(Dirt)
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Move(Right)))
+      
+      level.set(2,2)(tile)
       
       level.tick()
       
-      level.get(5,6) should be (FallingBoulder)
-      level.get(5,5) should be (Space)
-      
-      level.tick()
-      
-      level.get(5,6) should be (Boulder)      
+      level.get(3, 2) should be (tile)
+      level.get(2, 2) should be (Space)
     }
-    "let a falling boulder come to rest on another boulder (if it cannot roll)" in {
+    "respond to Move(Up) action" in {
       val level = new Level()
-      /*
-       *    r
-       *     
-       *   .r.
-       *    .
-       */
-      level.set(5,5)(Boulder)
-      level.set(5,7)(Boulder)
-      level.set(4,7)(Dirt)
-      level.set(6,7)(Dirt)
-      level.set(5,8)(Dirt)
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Move(Up)))
+      
+      level.set(2,2)(tile)
       
       level.tick()
       
-      level.get(5,6) should be (FallingBoulder)
-      level.get(5,5) should be (Space)
-      level.get(5,7) should be (Boulder)
-      
-      level.tick()
-      
-      level.get(5,6) should be (Boulder)
-      level.get(5,7) should be (Boulder)
-    }      
-    "let a boulder roll to the right if there is empty space to its right and to the right and below" in {
-      val level = new Level()
-      level.set(5,5)(Boulder)
-      level.set(5,6)(Wall)
-      level.set(4,5)(Dirt)
-      
-      level.tick()
-      
-      level.get(6,5) should be (FallingBoulder)
-      level.get(5,5) should be (Space)
+      level.get(2, 1) should be (tile)
+      level.get(2, 2) should be (Space)
     }
-    "let a boulder roll to the left if there is empty space to its left and to the left and below" in {
+    "respond to Move(Down) action" in {
       val level = new Level()
-      level.set(5,5)(Boulder)
-      level.set(5,6)(Wall)
-      level.set(6,5)(Dirt)
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Move(Down)))
+      
+      level.set(2,2)(tile)
       
       level.tick()
       
-      level.get(4,5) should be (FallingBoulder)
-      level.get(5,5) should be (Space)
+      level.get(2, 3) should be (tile)
+      level.get(2, 2) should be (Space)
     }
-    "not let a boulder roll off of dirt" in {
+    "respond to the Become action" in {
       val level = new Level()
-      level.set(5,5)(Boulder)
-      level.set(5,6)(Dirt)
-      level.set(6,5)(Dirt)
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Become(FallingBoulder)))
+      
+      level.set(2,2)(tile)
       
       level.tick()
       
-      level.get(4,5) should be (Space)
-      level.get(5,5) should be (Boulder)
-      
+      level.get(2, 2) should be (FallingBoulder)
     }
-    "explode a falling boulder on top of the player" in {
+    "respond to the Explode action" in {
       val level = new Level()
-      level.set(5,5)(FallingBoulder)
-      level.set(5,6)(PlayerCharacter)
+      val tile = mock[anActionTile]
+      when(tile.act(1, 1, level)).thenReturn(List(Explode(Direction(2,2), Space))) // Explosion centered on (3, 3)
+      
+      level.set(1, 1)(tile)
       
       level.tick()
-
-      level.get(4,5) should be (Explosion(1))
-      level.get(5,5) should be (Explosion(1))
-      level.get(6,5) should be (Explosion(1))
-      level.get(4,6) should be (Explosion(1))
-      level.get(5,6) should be (Explosion(1))
-      level.get(6,6) should be (Explosion(1))
-      level.get(4,7) should be (Explosion(1))
-      level.get(5,7) should be (Explosion(1))
-      level.get(6,7) should be (Explosion(1))
+      
+      level.get(2, 2) should be (Explosion(1, Space))
+      level.get(3, 2) should be (Explosion(1, Space))
+      level.get(4, 2) should be (Explosion(1, Space))
+      level.get(2, 3) should be (Explosion(1, Space))
+      level.get(3, 3) should be (Explosion(1, Space))
+      level.get(4, 3) should be (Explosion(1, Space))
+      level.get(2, 4) should be (Explosion(1, Space))
+      level.get(3, 4) should be (Explosion(1, Space))
+      level.get(4, 4) should be (Explosion(1, Space))
     }
-    "mark the level as finished if the player dies" in {
+    "respond to Become and Move in sequence" in {
       val level = new Level()
-      level.set(5,5)(FallingBoulder)
-      level.set(5,6)(PlayerCharacter)
-      
-      level.tick()
-      
-      level.finished should be (true)
-      
-    }
-    "animate explosions" in {
-      val level = new Level()
-      level.set(5,5)(Explosion(1))
-      
-      level.tick()
-      
-      level.get(5,5) should be (Explosion(2))
-      
-      level.tick()
-      
-      level.get(5,5) should be (Explosion(3))      
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Become(FallingBoulder), Move(Down)))
+          
+      level.set(2,2)(tile)
 
       level.tick()
       
-      level.get(5,5) should be (Explosion(4))
-      
-      level.tick()
-      
-      level.get(5,5) should be (Space)      
+      level.get(2, 3) should be (FallingBoulder)
+      level.get(2, 2) should be (Space)
       
     }
+
+    
+//    "mark the level as finished if the player dies" in {
+//      val level = new Level()
+//      level.set(5,5)(FallingBoulder)
+//      level.set(5,6)(PlayerCharacter)
+//      
+//      level.tick()
+//      
+//      level.finished should be (true)
+//      
+//    }
+//    "animate explosions" in {
+//      val level = new Level()
+//      level.set(5,5)(Explosion(1))
+//      
+//      level.tick()
+//      
+//      level.get(5,5) should be (Explosion(2))
+//      
+//      level.tick()
+//      
+//      level.get(5,5) should be (Explosion(3))      
+//
+//      level.tick()
+//      
+//      level.get(5,5) should be (Explosion(4))
+//      
+//      level.tick()
+//      
+//      level.get(5,5) should be (Space)      
+//      
+//    }
   }
 }
 

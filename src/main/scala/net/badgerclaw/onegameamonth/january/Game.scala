@@ -139,7 +139,7 @@ W....r......r.rr..................r....W
 W...........r.rr.........r..r.r.......PW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""    
     
-  val level = Level(cave4)  
+  val level = Level(cave1)  
   
   val resourceFactory: ResourceFactory = new ResourceFactory() {
     override def loadTexture(filename: String) = new Texture(Gdx.files.internal(filename))
@@ -216,6 +216,5 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
     case Title => setViewController(titleView, titleController)
     case StartLevel() => setViewController(levelView, levelController); music.setVolume(0.2f)
     case GameExit => Gdx.app.exit()
-  }
-  
+  }  
 }

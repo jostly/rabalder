@@ -21,6 +21,7 @@ package net.badgerclaw.onegameamonth.january.controllers
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.Input.Keys
 import net.badgerclaw.onegameamonth.january.level._
+import net.badgerclaw.onegameamonth.january.level.tile._
 import net.badgerclaw.onegameamonth.january.state._
 
 class LevelController(level: Level)(implicit context: ControllerContext) extends InputAdapter with Controller {

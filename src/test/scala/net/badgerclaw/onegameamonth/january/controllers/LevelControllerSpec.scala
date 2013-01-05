@@ -25,6 +25,7 @@ import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.Matchers.{isA}
 import net.badgerclaw.onegameamonth.january.level._
+import net.badgerclaw.onegameamonth.january.level.tile._
 import net.badgerclaw.onegameamonth.january.state._
 
 class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {

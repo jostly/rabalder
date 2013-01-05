@@ -19,14 +19,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package net.badgerclaw.onegameamonth.january.views
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import net.badgerclaw.onegameamonth.january.ResourceFactory
-import net.badgerclaw.onegameamonth.january.graphics._
-import net.badgerclaw.onegameamonth.january.level._
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.graphics.GL11
 import com.badlogic.gdx.Gdx
+
+import net.badgerclaw.onegameamonth.january.ResourceFactory
+import net.badgerclaw.onegameamonth.january.graphics._
+import net.badgerclaw.onegameamonth.january.level._
+import net.badgerclaw.onegameamonth.january.level.tile._
+import net.badgerclaw.onegameamonth.january.level.event._
 
 class LevelView(factory: ResourceFactory, level: Level) extends View {
 
@@ -41,14 +44,15 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     
   val tilesBag = new TextureBag(tileTextures, 16, 16, 8, 8)
   val tiles = Map[Tile, Array[TextureRegion]](
-    Explosion(1) -> tilesBag.extract(3, 2),
-    Explosion(2) -> tilesBag.extract(4, 2),
-    Explosion(3) -> tilesBag.extract(5, 2),
+    Explosion(1, Space) -> tilesBag.extract(3, 2),
+    Explosion(2, Space) -> tilesBag.extract(4, 2),
+    Explosion(3, Space) -> tilesBag.extract(5, 2),
     Dirt -> tilesBag.extract(3, 1),
     Wall -> tilesBag.extract(1, 0),
     SteelWall -> tilesBag.extract(7, 0),
     Boulder -> tilesBag.extract(2, 1),
     Diamond -> tilesBag.extract(0, 5, width = 8, height = 1),
+    Butterfly -> tilesBag.extract(0, 6, width = 8, height = 1),
     FallingBoulder -> tilesBag.extract(2, 1),
     FallingDiamond -> tilesBag.extract(0, 5),
     PlayerCharacter -> tilesBag.extract(8, 0),
@@ -138,12 +142,12 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
   
   private def playSounds() {
     level.pollEvents.toSet[Event].foreach(_ match {
-      case Move(PlayerCharacter, _) => moveSound.play()
-      case Remove(Diamond, PlayerCharacter) => diamondSound.play()
-      case Explode(_, _) => explodeSound.play()
-      case Hit(FallingDiamond, _) => diamondFallSound.play()
-      case Hit(FallingBoulder, _) => boulderFallSound.play(0.6f)
-      case Transform(PreExit, Exit) => exitOpenSound.play()
+//      case Move(PlayerCharacter, _) => moveSound.play()
+//      case Remove(Diamond, PlayerCharacter) => diamondSound.play()
+//      case Explode(_, _) => explodeSound.play()
+//      case Hit(FallingDiamond, _) => diamondFallSound.play()
+//      case Hit(FallingBoulder, _) => boulderFallSound.play(0.6f)
+//      case Transform(PreExit, Exit) => exitOpenSound.play()
       case _ => 
     })    
   }
