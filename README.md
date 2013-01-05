@@ -1,6 +1,8 @@
 Rabalder
 ========
 
+Version 0.1 (alpha)
+
 Rabalder is a Boulder Dash clone, aiming to remain true to the C64 original game as far as game mechanics and level layout are concerned. To that end, I found this page http://www.elmerproductions.com/sp/peterb/ very useful. Thanks to those involved for putting it together.
 
 
