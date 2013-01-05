@@ -28,7 +28,7 @@ object OneGameAMonthBuild extends Build {
       "org.scalatest" %% "scalatest" % "2.0.M5" % "test",
       "org.mockito" % "mockito-all" % "1.9.5" % "test"
     ),
-    version := "0.1"
+    version := "0.2-SNAPSHOT"
   )
 
   lazy val customAssemblySettings = assemblySettings ++ Seq(

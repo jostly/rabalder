@@ -91,7 +91,55 @@ W.d... rw..r....w.Xd r..w. .....w...rr W
 W.r.... w.. ..r.w.P. ...w....r.rw.... .W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""    
     
-  val level = Level(cave1)  
+    val cave3 = """0;15;0;24;150
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+Wr.ww.wrr.w...rwr..r....w...r.....rw.d.W
+W..Xw.d.r.w...www..w.r....r..r.r...w.wrW
+W....w..rd..r....w.....r.wwr.......w.wwW
+Wd.w..wrwr..r....w...r......r.rr......wW
+Wr.w...w..r.ww..r.wwd.......r.rr......wW
+Wrr..r....w...r......r.rr......r..dww..W
+W..r.ww..r.rr...w....r.rr......w..r.w.rW
+W..w...d......d.r..wwr..r.w.wr..wr..d.rW
+Wr.r....w.ww..d.r..wwr..r..d.w...w..r.wW
+W.r.ww.....rrwr..d.w.wr..wr...wr..d.r..W
+Ww.ww......rrwr..r.w.ww...w..r.ww..r.wwW
+W.w.r.r.w...wwr..r....w...r.....ww.r.wwW
+W.w.r.r.w.d.w.wr..wr....r..r.rr....w...W
+Ww..wrwr..r....w...d...w.rw......w.ww.dW
+Ww...wwr..w.d...wr..r.r...r.wr......w..W
+Ww.d....r.ww..r.wwr.......r.wr......w..W
+W..r....w...r......r.rr......w..r.w...wW
+Wr.ww..r.ww...w....r.rr......w..rd..r..P
+Ww...r......r.rd......r...ww..wr..d.w..W
+Wrr...w.....r.rd......w..r.wd.d.rw.r...W
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""   
+      
+  val cave4 = """20;5;20;36;120
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WX.....r....................r........r.W
+W.....r..............r.................W
+W........r..r..........................W
+Wr.....................................W
+W...................r..................W
+W.r.....................r.........r....W
+W..r.....r...........r..r.............rW
+W......r......r.....................r..W
+W.......  B ..r.  B ....  B ....  B ...W
+W.......    ..r.    ....    ....    r..W
+W......................................W
+W...r..............................r...W
+W...r.....r............................W
+W......r...........r..................rW
+W...........r.......r..................W
+W..r..............r....................W
+W.....................r.........r......W
+W................................r..r..W
+W....r......r.rr..................r....W
+W...........r.rr.........r..r.r.......PW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""    
+    
+  val level = Level(cave4)  
   
   val resourceFactory: ResourceFactory = new ResourceFactory() {
     override def loadTexture(filename: String) = new Texture(Gdx.files.internal(filename))

@@ -31,14 +31,14 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
   val cave1 = """
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W...... ..d.r .....r.r....... ....r....W
-W.rXr...... .........rd..r.... ..... ..W
+W.rPr...... .........rd..r.... ..... ..W
 W.......... ..r.....r.r..r........r....W
 Wr.rr.........r......r..r....r...r.....W
 Wr. r......... r..r........r......r.rr.W
 W... ..r........r.....r. r........r.rr.W
 W.................................r..r.W
 W. ...r..d. ...............d.rd...... .W
-W..d.....r.....Pd.......rr r..r....r...W
+W..d.....r.....Xd.......rr r..r....r...W
 W...r..r.r..............r .r..r........W
 W.r.....r........rrr.......r.. .d....r.W
 W.d.. ..r.  .....r.rd..d....r...r..d. .W

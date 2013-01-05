@@ -27,7 +27,7 @@ class LevelSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   val cave1 = """
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W...... ..d.r .....r.r....... ....r....W
-W.rXr...... .........rd..r.... ..... ..W
+W.rPr...... .........rd..r.... ..... ..W
 W.......... ..r.....r.r..r........r....W
 Wr.rr.........r......r..r....r...r.....W
 Wr. r......... r..r........r......r.rr.W
@@ -41,7 +41,7 @@ W.d.. ..r.  .....r.rd..d....r...r..d. .W
 W. r..............r r..r........d.....rW
 W........wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwW
 W r.........r...d....r.....r...r......wW
-W r......... r..r........r......r.rr..PW
+W r......... r..r........r......r.rr..XW
 W. ..r........r.....r.  ....d...r.rr..rW
 W....rd..r........r......r.rd......r...W
 W... ..r. ..r.rr.........r.rd...... ..rW
@@ -127,6 +127,19 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.move((38, 16), (0, 1))
       level.get(38, 17) should be (Boulder)
       level.get(38, 16) should be (PlayerCharacter)
+    }
+    "push boulders if there is a space behind it and if trying hard enough" in {
+      val level: Level = Level(cave1)
+      level.set(37,16)(Boulder)
+      level.set(36,16)(Space)
+      
+      for (i <- 0 until 100 if level.get(37,16) == Boulder) {
+        level.move((38, 16), (-1, 0))
+      }
+      
+      level.get(36,16) should be (Boulder)
+      level.get(37,16) should be (PlayerCharacter)
+      level.get(38,16) should be (Space)      
     }
   }
   "tick()" should {

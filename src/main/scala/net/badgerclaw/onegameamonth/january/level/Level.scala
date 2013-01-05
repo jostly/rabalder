@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package net.badgerclaw.onegameamonth.january.level
 
 import scala.annotation.tailrec
+import scala.util.Random
 
 class Level(data: Array[Tile]) {
   def this() = this(Level.empty)
@@ -38,6 +39,8 @@ class Level(data: Array[Tile]) {
   var finished = false
   
   private var lastKnownPlayerPosition = (0, 0)
+  
+  private val random = new Random()
   
   def pollEvents = {
     val t = events
@@ -70,16 +73,34 @@ class Level(data: Array[Tile]) {
     (-1, -1)
   }
     
-  def move(position: (Int, Int), direction: (Int, Int)) = {
+  def move(position: (Int, Int), direction: (Int, Int)): Option[Tile] = {
     val newpos = (position._1 + direction._1, position._2 + direction._2)    
 	val target = get(newpos._1, newpos._2)
 	
-	if (target == Space || target == Dirt || target == Diamond || target == Exit) {
+    def doMove(): Option[Tile] = {
 	  set(newpos._1, newpos._2)(get(position._1, position._2))
 	  set(position._1, position._2)(Space)
 	  events = Remove(target, PlayerCharacter) :: Move(PlayerCharacter, target) :: events 
-	  Some(target)
-	} else None    
+	  Some(target)      
+    }
+    def dontMove: Option[Tile] = None
+	
+	if (target == Space || target == Dirt || target == Diamond || target == Exit) {
+	  
+	  doMove()
+	  
+	} else if (target == Boulder && direction._2 == 0 && get(newpos._1 + direction._1, newpos._2) == Space &&
+	    random.nextFloat() < (1f/8f)) {
+	  
+	  set(newpos._1 + direction._1, newpos._2)(Boulder)
+	  doMove()
+	  
+	} else {
+	  
+	  dontMove
+	  
+	}
+	    
   }
   
   def tick() {
@@ -177,9 +198,9 @@ object Level {
     case 'w' => Wall
     case '.' => Dirt
     case 'r' => Boulder
-    case 'X' => PreExit
+    case 'X' => PlayerCharacter
     case 'd' => Diamond
-    case 'P' => PlayerCharacter
+    case 'P' => PreExit
     case _ => Space
   }
   
