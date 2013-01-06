@@ -122,6 +122,50 @@ class ButterflySpec extends WordSpec with ShouldMatchers with MockitoSugar {
         fly.act(3, 3, level) should be (Seq(Become(Butterfly(Up))))
       }
     }
+    "above a player character" should {
+      "explode even if it could move instead" in {
+        val fly = Butterfly(Up)
+        val level = mock[ReadOnlyLevel]
+        
+        when(level.get(3,4)).thenReturn(PlayerCharacter)
+        when(level.get(4,3)).thenReturn(Space)
+        
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+      }
+    }
+    "to the right of a player character" should {
+      "explode even if it could move instead" in {
+        val fly = Butterfly(Up)
+        val level = mock[ReadOnlyLevel]
+        
+        when(level.get(2,3)).thenReturn(PlayerCharacter)
+        when(level.get(4,3)).thenReturn(Space)
+        
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+      }
+    }
+    "below of a player character" should {
+      "explode even if it could move instead" in {
+        val fly = Butterfly(Up)
+        val level = mock[ReadOnlyLevel]
+        
+        when(level.get(3,2)).thenReturn(PlayerCharacter)
+        when(level.get(4,3)).thenReturn(Space)
+        
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+      }
+    }
+    "to the left of a player character" should {
+      "explode even if it could move instead" in {
+        val fly = Butterfly(Down)
+        val level = mock[ReadOnlyLevel]
+        
+        when(level.get(4,3)).thenReturn(PlayerCharacter)
+        when(level.get(2,3)).thenReturn(Space)
+        
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+      }
+    }
   } 
 
 }

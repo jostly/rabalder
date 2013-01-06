@@ -18,6 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
-case object Wall extends WallTile
+case object Wall extends WallTile with RoundedTile
 
 case object SteelWall extends SteelWallTile

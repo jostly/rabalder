@@ -22,7 +22,7 @@ import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
 import net.badgerclaw.onegameamonth.january.level.tile.action.ActionTile
 import net.badgerclaw.onegameamonth.january.level.tile.action.Action
 
-case object Diamond extends DiamondTile with ActionTile with FallingTile {
+case object Diamond extends DiamondTile with ActionTile with FallingTile with RoundedTile {
   
   override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = 
     checkFalling(x, y, level, FallingDiamond)

@@ -18,13 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
-import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
-import net.badgerclaw.onegameamonth.january.level.tile.action.ActionTile
-import net.badgerclaw.onegameamonth.january.level.tile.action.Action
+/**
+ * A tile that others can roll off of
+ */
+trait RoundedTile {
+  this: Tile =>
 
-case object Boulder extends BoulderTile with ActionTile with FallingTile with RoundedTile {
-  
-  override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = 
-    checkFalling(x, y, level, FallingBoulder)
-    
 }

@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
+/**
+ * This tile will explode if impacted by a falling object
+ */
 trait ExplosiveTile {
   this: Tile =>
     

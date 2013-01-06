@@ -35,16 +35,10 @@ trait FallingTile {
     def get(d: Delta) = level.get(x + d.dx, y + d.dy)
 
     get(Down) match {
-      case Boulder if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(tileInMotion), Move(Left))
-      case Boulder if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(tileInMotion), Move(Right))
-      
-      case Diamond if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(tileInMotion), Move(Left))
-      case Diamond if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(tileInMotion), Move(Right))
-      
-      case Wall if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(tileInMotion), Move(Left))
-      case Wall if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(tileInMotion), Move(Right))
-      
-      case Space => List(Become(tileInMotion), Move(Down))
+      case _: RoundedTile if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(tileInMotion), Move(Left))
+      case _: RoundedTile if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(tileInMotion), Move(Right))
+            
+      case _: SpaceTile => List(Become(tileInMotion), Move(Down))
       
       case _ => List() 
     } 
@@ -54,16 +48,10 @@ trait FallingTile {
     def get(d: Delta) = level.get(x + d.dx, y + d.dy)
     
     get(Down) match {
-      case Boulder if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Move(Left))
-      case Boulder if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Move(Right))      
+      case _: RoundedTile if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Move(Left))
+      case _: RoundedTile if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Move(Right))      
 
-      case Wall if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Move(Left))
-      case Wall if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Move(Right))      
-
-      case Diamond if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Move(Left))
-      case Diamond if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Move(Right))      
-      
-      case Space => List(Move(Down))
+      case _: SpaceTile => List(Move(Down))
       
       case explosive: ExplosiveTile => List(Explode(Down, explosive.explodeTo))
       

@@ -27,9 +27,25 @@ case class Butterfly(direction: Direction) extends ButterflyTile with ExplosiveT
   
   override def act(x: Int, y: Int, level: ReadOnlyLevel) = {
     def get(d: Delta) = level.get(x + d.dx, y + d.dy)
-    
-    if (get(direction.turnRight) == Space) List(Become(Butterfly(direction.turnRight)), Move(direction.turnRight))
-    else if(get(direction.ahead) == Space) List(Move(direction.ahead))
-    else List(Become(Butterfly(direction.turnLeft)))
+    def hasNeighbor(f: Tile => Boolean): Boolean =
+      f(get(Down)) || f(get(Left)) || f(get(Up)) || f(get(Right))
+        
+    if (hasNeighbor( _ == PlayerCharacter )) {
+      
+      List(Explode(Delta(0,0), explodeTo))
+      
+    } else if (get(direction.turnRight).isEmpty) {
+      
+      List(Become(Butterfly(direction.turnRight)), Move(direction.turnRight))
+      
+    } else if(get(direction.ahead).isEmpty) {
+      
+      List(Move(direction.ahead))
+      
+    } else {
+      
+      List(Become(Butterfly(direction.turnLeft)))
+      
+    }
   }  
 }
