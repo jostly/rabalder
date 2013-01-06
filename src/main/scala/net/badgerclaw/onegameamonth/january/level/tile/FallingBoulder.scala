@@ -20,23 +20,25 @@ package net.badgerclaw.onegameamonth.january.level.tile
 
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
 
-case object Boulder extends BoulderTile with ActionTile {
+case object FallingBoulder extends BoulderTile with ActionTile {
   override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = {
     def get(d: Direction) = level.get(x + d.dx, y + d.dy)
-
+    
     get(Down) match {
-      case Boulder if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(FallingBoulder), Move(Left))
-      case Boulder if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(FallingBoulder), Move(Right))
+      case Boulder if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Move(Left))
+      case Boulder if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Move(Right))      
+
+      case Wall if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Move(Left))
+      case Wall if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Move(Right))      
+
+      case Diamond if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Move(Left))
+      case Diamond if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Move(Right))      
       
-      case Diamond if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(FallingBoulder), Move(Left))
-      case Diamond if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(FallingBoulder), Move(Right))
+      case Space => List(Move(Down))
       
-      case Wall if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(FallingBoulder), Move(Left))
-      case Wall if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(FallingBoulder), Move(Right))
+      case explosive: ExplosiveTile => List(Explode(Down, explosive.explodeTo))
       
-      case Space => List(Become(FallingBoulder), Move(Down))
-      
-      case _ => List() 
-    } 
+      case _ => List(Become(Boulder))
+    }
   }
 }

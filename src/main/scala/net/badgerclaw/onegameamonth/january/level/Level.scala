@@ -25,6 +25,10 @@ import tile._
 
 trait ReadOnlyLevel {
   def get(x: Int, y: Int): Tile
+  
+  def diamondsNeeded: Int
+  
+  def diamondsTaken: Int
 }
 
 class Level(data: Array[Tile]) extends ReadOnlyLevel {
@@ -110,21 +114,33 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   }
   
   def tick() {
-    var exclude = Set.empty[(Int, Int)]
+    var excluded = Set.empty[(Int, Int)]
     for (x <- 1 until width-1) {
-      for (y <- 1 until height-1 if (!exclude.contains((x,y)))) {
+      for (y <- 1 until height-1 if (!excluded.contains((x,y)))) {
+        def exclude(ex: Int, ey: Int) {
+          if (ey > y || (ey == y) && (ex > x)) {
+        	excluded += ((ex, ey))
+          }
+        }
         get(x,y) match {
           case action: ActionTile => action.act(x, y, this).foreach( {
-            case Move(d) => {
-              set(x + d.dx, y + d.dy)(get(x, y))
+            case Move(direction) => {
+              val tile = get(x, y)
+              set(x + direction.dx, y + direction.dy)(tile)
               set(x, y)(Space)
-              exclude += ((x + d.dx, y + d.dy)) // Mark the moved-to position as already scanned
+              exclude(x + direction.dx, y + direction.dy)
             }
             case Become(what) => set(x, y)(what)
             case Explode(direction, remains) => {
-              for (dx <- -1 to 1) {
-                for (dy <- -1 to 1) {
-                  set(x + direction.dx + dx, y + direction.dy + dy)(Explosion(1, remains))
+              for (explosionX <- -1 to 1) {
+                for (explosionY <- -1 to 1) {
+                  val ex = x + direction.dx + explosionX
+                  val ey = y + direction.dy + explosionY
+                  if (get(ex, ey) == PlayerCharacter) {
+                    finished = true
+                  }
+                  set(ex, ey)(Explosion(1, remains))
+                  exclude(ex, ey)
                 }
               }
             }

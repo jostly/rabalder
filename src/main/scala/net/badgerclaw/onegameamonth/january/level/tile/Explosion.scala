@@ -18,4 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
-case class Explosion(stage: Int, remains: Tile) extends ExplosionTile
+import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+
+case class Explosion(stage: Int, remains: Tile) extends ExplosionTile with ActionTile {
+  assert(stage >= 1 && stage <= 3, "stage must be between 1 and 3")
+  
+  override def act(x: Int, y: Int, level: ReadOnlyLevel) = 
+    if (stage < 3) List(Become(Explosion(stage+1, remains)))
+    else List(Become(remains))
+}

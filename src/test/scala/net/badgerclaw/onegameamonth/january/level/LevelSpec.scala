@@ -250,39 +250,16 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.get(2, 2) should be (Space)
       
     }
-
-    
-//    "mark the level as finished if the player dies" in {
-//      val level = new Level()
-//      level.set(5,5)(FallingBoulder)
-//      level.set(5,6)(PlayerCharacter)
-//      
-//      level.tick()
-//      
-//      level.finished should be (true)
-//      
-//    }
-//    "animate explosions" in {
-//      val level = new Level()
-//      level.set(5,5)(Explosion(1))
-//      
-//      level.tick()
-//      
-//      level.get(5,5) should be (Explosion(2))
-//      
-//      level.tick()
-//      
-//      level.get(5,5) should be (Explosion(3))      
-//
-//      level.tick()
-//      
-//      level.get(5,5) should be (Explosion(4))
-//      
-//      level.tick()
-//      
-//      level.get(5,5) should be (Space)      
-//      
-//    }
+    "mark the level as finished if the player dies" in {
+      val level = new Level()
+      level.set(5,5)(FallingBoulder)
+      level.set(5,6)(PlayerCharacter)
+      
+      level.tick()
+      
+      level.finished should be (true)
+      
+    }
   }
 }
 

@@ -18,33 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
-sealed trait Tile {
-  def isEmpty = false // Functionally equivalent to checking if the tile is of type SpaceTile
-  def canBeDestroyed = true	// Set to false to make the tile survive other tiles exploding
+import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+
+case object PreExit extends SteelWallTile with ActionTile {
+  override def act(x: Int, y: Int, level: ReadOnlyLevel) = 
+    if (level.diamondsTaken >= level.diamondsNeeded) List(Become(Exit))
+    else List.empty
 }
-
-trait BoulderTile extends Tile
-
-trait DiamondTile extends Tile
-
-trait DirtTile extends Tile
-
-trait SpaceTile extends Tile {
-  override def isEmpty = true
-}
-
-trait PlayerCharacterTile extends Tile
-
-trait WallTile extends Tile
-
-trait SteelWallTile extends Tile {
-  override def canBeDestroyed = false
-}
-
-trait ButterflyTile extends Tile
-
-trait ExitTile extends Tile {
-  override def canBeDestroyed = false
-}
-
-trait ExplosionTile extends Tile

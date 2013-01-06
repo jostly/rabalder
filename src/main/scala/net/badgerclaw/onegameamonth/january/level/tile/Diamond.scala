@@ -19,3 +19,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package net.badgerclaw.onegameamonth.january.level.tile
 
 case object Diamond extends DiamondTile
+
+case object FallingDiamond extends DiamondTile
