@@ -18,6 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
-case object Diamond extends DiamondTile
+import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+import net.badgerclaw.onegameamonth.january.level.tile.action.ActionTile
+import net.badgerclaw.onegameamonth.january.level.tile.action.Action
 
-case object FallingDiamond extends DiamondTile
+case object Diamond extends DiamondTile with ActionTile with FallingTile {
+  
+  override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = 
+    checkFalling(x, y, level, FallingDiamond)
+    
+}

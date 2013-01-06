@@ -19,6 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package net.badgerclaw.onegameamonth.january.level.tile
 
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+import net.badgerclaw.onegameamonth.january.level.tile.action.ActionTile
+import net.badgerclaw.onegameamonth.january.level.tile.action.Become
 
 case object PreExit extends SteelWallTile with ActionTile {
   override def act(x: Int, y: Int, level: ReadOnlyLevel) = 

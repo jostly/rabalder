@@ -23,8 +23,9 @@ import org.scalatest.WordSpec
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.Matchers.{isA, anyString, eq => isEqualTo}
-
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+
+import action._
 
 class BoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   

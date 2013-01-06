@@ -19,24 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package net.badgerclaw.onegameamonth.january.level.tile
 
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+import net.badgerclaw.onegameamonth.january.level.tile.action.ActionTile
+import net.badgerclaw.onegameamonth.january.level.tile.action.Action
 
-case object Boulder extends BoulderTile with ActionTile {
-  override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = {
-    def get(d: Direction) = level.get(x + d.dx, y + d.dy)
-
-    get(Down) match {
-      case Boulder if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(FallingBoulder), Move(Left))
-      case Boulder if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(FallingBoulder), Move(Right))
-      
-      case Diamond if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(FallingBoulder), Move(Left))
-      case Diamond if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(FallingBoulder), Move(Right))
-      
-      case Wall if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(FallingBoulder), Move(Left))
-      case Wall if (get(Right).isEmpty && get(Right+Down).isEmpty) => List(Become(FallingBoulder), Move(Right))
-      
-      case Space => List(Become(FallingBoulder), Move(Down))
-      
-      case _ => List() 
-    } 
-  }
+case object Boulder extends BoulderTile with ActionTile with FallingTile {
+  
+  override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = 
+    checkFalling(x, y, level, FallingBoulder)
+    
 }

@@ -26,25 +26,29 @@ import org.mockito.Matchers.{isA, anyString, eq => isEqualTo}
 
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
 
+import action._
+
 class ExplosionSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   
   "An Explosion" when {
     "created" should {
-      "accept stages 1 through 3" in {
+      "accept stages 1 through 5" in {
         val remains = mock[Tile]
         Explosion(1, remains)
         Explosion(2, remains)
         Explosion(3, remains)
+        Explosion(4, remains)
+        Explosion(5, remains)
       }
       "not accept a stage less than 1" in {
         val remains = mock[Tile]
         
         evaluating { Explosion(0, remains) } should produce [AssertionError]
       }
-      "not accept a stage greater than 3" in {
+      "not accept a stage greater than 5" in {
         val remains = mock[Tile]
         
-        evaluating { Explosion(4, remains) } should produce [AssertionError]
+        evaluating { Explosion(6, remains) } should produce [AssertionError]
       }
     }    
     "acting" should {
@@ -60,11 +64,23 @@ class ExplosionSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
         Explosion(2, remains).act(3, 3, level) should be (Seq(Become(Explosion(3, remains))))      
       }
-      "go from stage 3 to leaving behind specified remains" in {
+      "go from stage 3 to stage 4" in {
         val level = mock[ReadOnlyLevel]
         val remains = mock[Tile]
 
-        Explosion(3, remains).act(3, 3, level) should be (Seq(Become(remains)))      
+        Explosion(3, remains).act(3, 3, level) should be (Seq(Become(Explosion(4, remains))))      
+      }
+      "go from stage 4 to stage 5" in {
+        val level = mock[ReadOnlyLevel]
+        val remains = mock[Tile]
+
+        Explosion(4, remains).act(3, 3, level) should be (Seq(Become(Explosion(5, remains))))      
+      }
+      "go from stage 5 to leaving behind specified remains" in {
+        val level = mock[ReadOnlyLevel]
+        val remains = mock[Tile]
+
+        Explosion(5, remains).act(3, 3, level) should be (Seq(Become(remains)))      
       }
     }
   }

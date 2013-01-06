@@ -89,7 +89,7 @@ Wd.. .r.wr....r.w.r. ..rw.r.r...w......W
 W.....r.wr..d...w... r..w..r....w...rr W
 W.d... rw..r....w.Xd r..w. .....w...rr W
 W.r.... w.. ..r.w.P. ...w....r.rw.... .W
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""    
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""   // q = firefly! 
     
     val cave3 = """0;15;0;24;150
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
@@ -139,7 +139,7 @@ W....r......r.rr..................r....W
 W...........r.rr.........r..r.r.......PW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""    
     
-  val level = Level(cave1)  
+  val level = Level(cave4)  
   
   val resourceFactory: ResourceFactory = new ResourceFactory() {
     override def loadTexture(filename: String) = new Texture(Gdx.files.internal(filename))

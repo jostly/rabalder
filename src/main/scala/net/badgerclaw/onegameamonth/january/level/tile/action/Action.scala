@@ -16,12 +16,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package net.badgerclaw.onegameamonth.january.level.tile
+package net.badgerclaw.onegameamonth.january.level.tile.action
 
-import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+import net.badgerclaw.onegameamonth.january.level.tile.Tile
 
-trait ActionTile {
-  this: Tile =>
-    
-  def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action]
-}
+sealed abstract class Action
+
+case class Move(offset: Delta) extends Action
+
+case class Become(what: Tile) extends Action
+
+case class Explode(offset: Delta, remains: Tile) extends Action

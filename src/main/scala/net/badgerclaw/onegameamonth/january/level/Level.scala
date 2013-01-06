@@ -22,14 +22,7 @@ import scala.annotation.tailrec
 import scala.util.Random
 import event.{Move => MoveEvent,Explode => ExplodeEvent, _}
 import tile._
-
-trait ReadOnlyLevel {
-  def get(x: Int, y: Int): Tile
-  
-  def diamondsNeeded: Int
-  
-  def diamondsTaken: Int
-}
+import net.badgerclaw.onegameamonth.january.level.tile.action._
 
 class Level(data: Array[Tile]) extends ReadOnlyLevel {
   def this() = this(Level.empty)
@@ -136,11 +129,13 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
                 for (explosionY <- -1 to 1) {
                   val ex = x + direction.dx + explosionX
                   val ey = y + direction.dy + explosionY
-                  if (get(ex, ey) == PlayerCharacter) {
-                    finished = true
+                  val tile = get(ex, ey)
+                  if (tile.canBeDestroyed) {
+                    if (tile == PlayerCharacter) finished = true
+                    
+                    set(ex, ey)(Explosion(1, remains))                    
+                    exclude(ex, ey)
                   }
-                  set(ex, ey)(Explosion(1, remains))
-                  exclude(ex, ey)
                 }
               }
             }
@@ -248,7 +243,7 @@ object Level {
     case 'r' => Boulder
     case 'X' => PlayerCharacter
     case 'd' => Diamond
-    case 'B' => Butterfly
+    case 'B' => Butterfly(Left)
     case 'P' => PreExit
     case _ => Space
   }
@@ -263,7 +258,7 @@ object Level {
     case Exit => "∏"
     case Diamond => "d"
     case FallingDiamond => "D"
-    case Butterfly => "B"
+    case Butterfly(_) => "B"
     case PlayerCharacter => "X"
     case Space => " "
     case _ => "?"

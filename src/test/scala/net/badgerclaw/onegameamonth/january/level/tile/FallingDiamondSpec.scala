@@ -28,15 +28,15 @@ import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
 
 import action._
 
-class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar {
+class FallingDiamondSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
-  "A FallingBoulder" when {
+  "A FallingDiamond" when {
     "above empty space" should {
       "fall down one step" in {
         val level = mock[ReadOnlyLevel]
         when(level.get(3,4)).thenReturn(Space)
 
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Down)))        
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Down)))        
       }
     }
     "above a boulder" should {
@@ -46,7 +46,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(2,3)).thenReturn(Dirt)
         when(level.get(4,3)).thenReturn(Dirt)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Become(Boulder)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Become(Diamond)))
       }
       "roll to the left if there is empty space to the left and diagonally left and below" in {
         val level = mock[ReadOnlyLevel]
@@ -55,7 +55,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(2,4)).thenReturn(Space)
         when(level.get(4,3)).thenReturn(Dirt)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Left)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Left)))
       }
       "roll to the right if there is empty space to the right and diagonally right and below" in {
         val level = mock[ReadOnlyLevel]
@@ -64,7 +64,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(4,4)).thenReturn(Space)
         when(level.get(2,3)).thenReturn(Dirt)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Right)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Right)))
       }
       "roll to the left if surrounded by empty space" in {
         val level = mock[ReadOnlyLevel]
@@ -74,7 +74,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(4,3)).thenReturn(Space)
         when(level.get(4,4)).thenReturn(Space)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Left)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Left)))
       }
     }
     "above a wall" should {
@@ -84,7 +84,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(2,3)).thenReturn(Dirt)
         when(level.get(4,3)).thenReturn(Dirt)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Become(Boulder)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Become(Diamond)))
       }
       "roll to the left if there is empty space to the left and diagonally left and below" in {
         val level = mock[ReadOnlyLevel]
@@ -93,7 +93,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(2,4)).thenReturn(Space)
         when(level.get(4,3)).thenReturn(Dirt)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Left)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Left)))
       }
       "roll to the right if there is empty space to the right and diagonally right and below" in {
         val level = mock[ReadOnlyLevel]
@@ -102,7 +102,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(4,4)).thenReturn(Space)
         when(level.get(2,3)).thenReturn(Dirt)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Right)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Right)))
       }
       "roll to the left if surrounded by empty space" in {
         val level = mock[ReadOnlyLevel]
@@ -112,7 +112,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(4,3)).thenReturn(Space)
         when(level.get(4,4)).thenReturn(Space)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Left)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Left)))
       }
     }
     "above a diamond" should {
@@ -122,7 +122,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(2,3)).thenReturn(Dirt)
         when(level.get(4,3)).thenReturn(Dirt)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Become(Boulder)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Become(Diamond)))
       }
       "roll to the left if there is empty space to the left and diagonally left and below" in {
         val level = mock[ReadOnlyLevel]
@@ -131,7 +131,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(2,4)).thenReturn(Space)
         when(level.get(4,3)).thenReturn(Dirt)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Left)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Left)))
       }
       "roll to the right if there is empty space to the right and diagonally right and below" in {
         val level = mock[ReadOnlyLevel]
@@ -140,7 +140,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(4,4)).thenReturn(Space)
         when(level.get(2,3)).thenReturn(Dirt)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Right)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Right)))
       }
       "roll to the left if surrounded by empty space" in {
         val level = mock[ReadOnlyLevel]
@@ -150,7 +150,7 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         when(level.get(4,3)).thenReturn(Space)
         when(level.get(4,4)).thenReturn(Space)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Move(Left)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Move(Left)))
       }
     }
     "above an explosive tile" should {
@@ -159,11 +159,11 @@ class FallingBoulderSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         
         val level = mock[ReadOnlyLevel]
         val tile = mock[anExplosiveTile]
-        val explodeTo = mock[BoulderTile]
+        val explodeTo = mock[DiamondTile]
         when(tile.explodeTo).thenReturn(explodeTo)        
         when(level.get(3,4)).thenReturn(tile)
         
-        FallingBoulder.act(3, 3, level) should be (Seq(Explode(Down, explodeTo)))
+        FallingDiamond.act(3, 3, level) should be (Seq(Explode(Down, explodeTo)))
       }
     }    
   }

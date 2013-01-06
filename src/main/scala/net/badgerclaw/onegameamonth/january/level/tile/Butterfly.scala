@@ -18,6 +18,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
-case object Butterfly extends ButterflyTile with ExplosiveTile {
+import net.badgerclaw.onegameamonth.january.level.tile.action._
+
+import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+
+case class Butterfly(direction: Direction) extends ButterflyTile with ExplosiveTile with ActionTile {
   override def explodeTo = Diamond
+  
+  override def act(x: Int, y: Int, level: ReadOnlyLevel) = {
+    def get(d: Delta) = level.get(x + d.dx, y + d.dy)
+    
+    if (get(direction.turnRight) == Space) List(Become(Butterfly(direction.turnRight)), Move(direction.turnRight))
+    else if(get(direction.ahead) == Space) List(Move(direction.ahead))
+    else List(Become(Butterfly(direction.turnLeft)))
+  }  
 }

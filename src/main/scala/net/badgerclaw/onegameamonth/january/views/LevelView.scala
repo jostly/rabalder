@@ -18,18 +18,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.views
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.graphics.GL11
-import com.badlogic.gdx.Gdx
 
 import net.badgerclaw.onegameamonth.january.ResourceFactory
 import net.badgerclaw.onegameamonth.january.graphics._
 import net.badgerclaw.onegameamonth.january.level._
-import net.badgerclaw.onegameamonth.january.level.tile._
 import net.badgerclaw.onegameamonth.january.level.event._
+import net.badgerclaw.onegameamonth.january.level.tile._
+import net.badgerclaw.onegameamonth.january.level.tile.action._
 
 class LevelView(factory: ResourceFactory, level: Level) extends View {
 
@@ -43,16 +41,29 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
   val exitOpenSound = factory.loadSound("audio/hirr.wav")
     
   val tilesBag = new TextureBag(tileTextures, 16, 16, 8, 8)
+  
+  val butterfly = tilesBag.extract(0, 6, width = 8, height = 1)
+  
   val tiles = Map[Tile, Array[TextureRegion]](
     Explosion(1, Space) -> tilesBag.extract(3, 2),
     Explosion(2, Space) -> tilesBag.extract(4, 2),
     Explosion(3, Space) -> tilesBag.extract(5, 2),
+    Explosion(4, Space) -> tilesBag.extract(4, 2),
+    Explosion(5, Space) -> tilesBag.extract(3, 2),
+    Explosion(1, Diamond) -> tilesBag.extract(3, 2),
+    Explosion(2, Diamond) -> tilesBag.extract(4, 2),
+    Explosion(3, Diamond) -> tilesBag.extract(5, 2),
+    Explosion(4, Diamond) -> tilesBag.extract(4, 2),
+    Explosion(5, Diamond) -> tilesBag.extract(3, 2),
     Dirt -> tilesBag.extract(3, 1),
     Wall -> tilesBag.extract(1, 0),
     SteelWall -> tilesBag.extract(7, 0),
     Boulder -> tilesBag.extract(2, 1),
     Diamond -> tilesBag.extract(0, 5, width = 8, height = 1),
-    Butterfly -> tilesBag.extract(0, 6, width = 8, height = 1),
+    Butterfly(Left) -> butterfly,
+    Butterfly(Right) -> butterfly,
+    Butterfly(Up) -> butterfly,
+    Butterfly(Down) -> butterfly,
     FallingBoulder -> tilesBag.extract(2, 1),
     FallingDiamond -> tilesBag.extract(0, 5),
     PlayerCharacter -> tilesBag.extract(8, 0),

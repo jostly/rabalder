@@ -26,6 +26,8 @@ import org.mockito.Matchers.{isA, anyString, eq => isEqualTo}
 
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
 
+import action._
+
 class PreExitSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   
   "PreExit" should {

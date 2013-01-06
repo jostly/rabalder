@@ -16,15 +16,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package net.badgerclaw.onegameamonth.january.level.tile
+package net.badgerclaw.onegameamonth.january.level.tile.action
 
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
-import net.badgerclaw.onegameamonth.january.level.tile.action.ActionTile
-import net.badgerclaw.onegameamonth.january.level.tile.action.Action
+import net.badgerclaw.onegameamonth.january.level.tile.Tile
 
-case object FallingBoulder extends BoulderTile with ActionTile with FallingTile {
-  
-  override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] =
-    continueFalling(x, y, level, Boulder)
+trait ActionTile {
+  this: Tile =>
     
+  def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action]
 }

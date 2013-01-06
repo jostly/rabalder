@@ -23,8 +23,8 @@ import org.scalatest.WordSpec
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.Matchers.{isA, anyInt}
-
 import tile._
+import tile.action._
 
 class LevelSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   val cave1 = """
@@ -221,7 +221,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
     "respond to the Explode action" in {
       val level = new Level()
       val tile = mock[anActionTile]
-      when(tile.act(1, 1, level)).thenReturn(List(Explode(Direction(2,2), Space))) // Explosion centered on (3, 3)
+      when(tile.act(1, 1, level)).thenReturn(List(Explode(Delta(2,2), Space))) // Explosion centered on (3, 3)
       
       level.set(1, 1)(tile)
       
@@ -237,6 +237,31 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.get(3, 4) should be (Explosion(1, Space))
       level.get(4, 4) should be (Explosion(1, Space))
     }
+    "only explode tiles that can be destroyed, leaving others undisturbed" in {
+      val level = new Level()
+      val tile = mock[anActionTile]
+      val unbreakable = mock[anActionTile]
+      when(tile.act(1, 1, level)).thenReturn(List(Explode(Delta(2,2), Space))) // Explosion centered on (3, 3)
+      when(unbreakable.canBeDestroyed).thenReturn(false)
+      when(unbreakable.act(4, 4, level)).thenReturn(List())
+      
+      level.set(1, 1)(tile)
+      level.set(4, 4)(unbreakable)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (Explosion(1, Space))
+      level.get(3, 2) should be (Explosion(1, Space))
+      level.get(4, 2) should be (Explosion(1, Space))
+      level.get(2, 3) should be (Explosion(1, Space))
+      level.get(3, 3) should be (Explosion(1, Space))
+      level.get(4, 3) should be (Explosion(1, Space))
+      level.get(2, 4) should be (Explosion(1, Space))
+      level.get(3, 4) should be (Explosion(1, Space))
+      level.get(4, 4) should be (unbreakable)
+      
+      verify(unbreakable).act(4, 4, level)
+    }    
     "respond to Become and Move in sequence" in {
       val level = new Level()
       val tile = mock[anActionTile]

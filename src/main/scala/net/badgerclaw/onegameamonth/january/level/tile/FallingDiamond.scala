@@ -18,23 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
-case class Direction(val dx: Int, val dy: Int) {
-  def +(that: Direction) = Direction(dx + that.dx, dy + that.dy)
+import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+import net.badgerclaw.onegameamonth.january.level.tile.action.ActionTile
+import net.badgerclaw.onegameamonth.january.level.tile.action.Action
+
+case object FallingDiamond extends DiamondTile with ActionTile with FallingTile {
+  
+  override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] =
+    continueFalling(x, y, level, Diamond)
+    
 }
-
-object Left extends Direction(-1, 0)
-
-object Right extends Direction(1, 0)
-
-object Up extends Direction(0, -1)
-
-object Down extends Direction(0, 1)
-
-
-sealed abstract class Action
-
-case class Move(direction: Direction) extends Action
-
-case class Become(what: Tile) extends Action
-
-case class Explode(center: Direction, remains: Tile) extends Action
