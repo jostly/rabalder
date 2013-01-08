@@ -101,36 +101,6 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
     }
     (-1, -1)
   }
-    
-  def move(position: (Int, Int), direction: (Int, Int)): Option[Tile] = {
-    val newpos = (position._1 + direction._1, position._2 + direction._2)    
-	val target = get(newpos._1, newpos._2)
-	
-    def doMove(): Option[Tile] = {
-	  set(newpos._1, newpos._2)(get(position._1, position._2))
-	  set(position._1, position._2)(Space)
-	  events = Removed(target, PlayerCharacter) :: Moved(PlayerCharacter, target) :: events 
-	  Some(target)      
-    }
-    def dontMove: Option[Tile] = None
-	
-	if (target == Space || target == Dirt || target == Diamond || target == Exit) {
-	  
-	  doMove()
-	  
-	} else if (target == Boulder && direction._2 == 0 && get(newpos._1 + direction._1, newpos._2) == Space &&
-	    random.nextFloat() < (1f/8f)) {
-	  
-	  set(newpos._1 + direction._1, newpos._2)(Boulder)
-	  doMove()
-	  
-	} else {
-	  
-	  dontMove
-	  
-	}
-	    
-  }
   
   def tick() {
     var lastAmoebaCount = 0
@@ -149,11 +119,17 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
         tile match {
           case action: ActionTile => action.act(x, y, this).foreach( {
             case Move(direction) => {
-              val tile = get(x, y)
-              addEvent(Moved(tile, get(x + direction.dx, y + direction.dy)))
-              set(x + direction.dx, y + direction.dy)(tile)
+              val current = get(x, y)
+              val tx = x + direction.dx
+              val ty = y + direction.dy
+              val destination = get(tx, ty)
+              addEvent(Moved(current, destination))
+              set(tx, ty)(current)
               set(x, y)(Space)
-              exclude(x + direction.dx, y + direction.dy)
+              exclude(tx, ty)
+              if (destination == Exit) {
+                finished = true
+              }
             }
             case Become(what) => {
               addEvent(Transformed(get(x, y), what))
@@ -242,7 +218,7 @@ object Level {
       }
       case _ => 
     }
-    
+
     level
   }
 

@@ -87,64 +87,8 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.find(PreExit) should be ((3, 2))
       
     }
-    
   }
-  
-  "Moving in a level" should {
-	
-    "move something in a tile, leaving Space" in {
-      val level: Level = Level(cave1)
-      
-      level.move((38, 16), (-1, 0)) // Move tile (38, 16) one step left
-      
-      level.get(37, 16) should be (PlayerCharacter)
-      level.get(38, 16) should be (Space)
-    }
-    
-    "return what was in the target space if move succeeded, None otherwise" in {
-      val level: Level = Level(cave1)
-      
-      level.move((38, 16), (-1, 0)) should be (Some(Dirt))
-      level.move((38, 16), (1, 0)) should be (None)
-    }
-    
-    "not move onto walls" in {
-      val level: Level = Level(cave1)
-      
-      level.move((38, 16), (0, -1))
-      level.get(38, 15) should be (Wall)
-      level.get(38, 16) should be (PlayerCharacter)
-    }
-    
-    "not move onto steel walls" in {
-      val level: Level = Level(cave1)
-      
-      level.move((38, 16), (1, 0))
-      level.get(39, 16) should be (SteelWall)
-      level.get(38, 16) should be (PlayerCharacter)
-    }
-    
-    "not move onto boulders" in {
-      val level: Level = Level(cave1)
-      
-      level.move((38, 16), (0, 1))
-      level.get(38, 17) should be (Boulder)
-      level.get(38, 16) should be (PlayerCharacter)
-    }
-    "push boulders if there is a space behind it and if trying hard enough" in {
-      val level: Level = Level(cave1)
-      level.set(37,16)(Boulder)
-      level.set(36,16)(Space)
-      
-      for (i <- 0 until 100 if level.get(37,16) == Boulder) {
-        level.move((38, 16), (-1, 0))
-      }
-      
-      level.get(36,16) should be (Boulder)
-      level.get(37,16) should be (PlayerCharacter)
-      level.get(38,16) should be (Space)      
-    }
-  }
+
   "tick()" should {
     trait anActionTile extends SpaceTile with ActionTile
     trait playerCharacterTile extends PlayerCharacterTile with ActionTile
@@ -376,6 +320,20 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.tick()
       
       level.finished should be (true)
+    }
+    "mark the level as finished if the player moves onto the exit" in {
+      
+      val level = new Level()
+      val tile = mock[playerCharacterTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Move(Down)))
+      
+      level.set(2,2)(tile)
+      level.set(2,3)(Exit)
+      
+      level.tick()
+      
+      level.finished should be (true)
+      
     }
   }
 }

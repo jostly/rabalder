@@ -37,6 +37,10 @@ case object PlayerCharacter extends PlayerCharacterTile with ExplosiveTile with 
 	      if (tile.isEmpty) List(Move(dir))
 	      else List(Remove(dir), Move(dir))
 	      
+	    } else if (tile == Exit) {
+	      
+	      List(Move(dir))
+	      
 	    } else if ((dir == Left || dir == Right) && 
 	        tile == Boulder && 
 	        get(dir+dir).isEmpty && 
