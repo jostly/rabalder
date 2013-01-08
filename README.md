@@ -42,7 +42,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+###Libraries
 
+libgdx jars are included in the distribution, lib/gdx*.jar. They are covered by the Apache 2.0 License, see lib/LICENSE and visit http://libgdx.badlogicgames.com/ for more information about this fantastic library.
+
+###Music
 
 The included music is Copyright 2010-2011 Deceased Superior Technician.
 Licensed under Creative Commons Attribution License, CC BY 3.0
