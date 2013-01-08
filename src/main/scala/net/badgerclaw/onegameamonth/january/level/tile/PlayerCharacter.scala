@@ -28,8 +28,8 @@ case object PlayerCharacter extends PlayerCharacterTile with ExplosiveTile with 
     def get(d: Offset) = level.get(x + d.dx, y + d.dy)
     def canMoveOnto(t: Tile) = (t.isEmpty || t == Dirt || t == Diamond || t == FallingDiamond)
     
-    level.movementDirection match {
-      case Some(dir) => {
+    level.playerAction match {
+      case Some(Move(dir: Direction)) => {
 	    val tile = get(dir)
 	    
 	    if (canMoveOnto(tile)) {
@@ -47,7 +47,13 @@ case object PlayerCharacter extends PlayerCharacterTile with ExplosiveTile with 
 	      List()
 	    }
       }
-      case None => List()
+      case Some(Remove(dir: Direction)) => {
+	    val tile = get(dir)
+	    
+	    if (canMoveOnto(tile) && !tile.isEmpty) List(Remove(dir))
+	    else List()
+      }
+      case _ => List()
     }
   }
 }

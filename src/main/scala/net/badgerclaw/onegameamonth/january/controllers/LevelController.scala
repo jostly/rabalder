@@ -29,6 +29,7 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
 
   private var ticksLeftOnMove = 0
   final val ticksToMove = 6
+  private var removing = false
   
   override def tick() {
     if (ticksLeftOnMove > 0) {
@@ -40,11 +41,25 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
       ticksLeftOnMove = ticksToMove
     }
   }
+  
+  private def action(direction: Direction): PlayerAction = 
+    if (removing) Remove(direction)
+    else Move(direction)
     
   private def set(direction: Direction, state: Boolean): Boolean = {
-    if (state) level.movementDirection = Some(direction)
-    else if (level.movementDirection == Some(direction)) level.movementDirection = None
+    if (state) level.playerAction = Some(action(direction))
+    else if (level.playerAction == Some(Move(direction)) || level.playerAction == Some(Remove(direction))) level.playerAction = None    
     
+    true
+  }
+  
+  private def setSpace(state: Boolean): Boolean = {
+    removing = state
+    level.playerAction match {
+      case Some(Move(dir: Direction)) if (removing) => level.playerAction = Some(Remove(dir))
+      case Some(Remove(dir: Direction)) if (!removing) => level.playerAction = Some(Move(dir))
+      case _ =>
+    }
     true
   }
     
@@ -53,6 +68,9 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
     case Keys.RIGHT => set(Right, state)
     case Keys.UP => set(Up, state)
     case Keys.DOWN => set(Down, state)
+    case Keys.SPACE => setSpace(state)
+    case Keys.SHIFT_LEFT => setSpace(state)
+    case Keys.SHIFT_RIGHT => setSpace(state)
     case Keys.ENTER if (state == false && level.finished) => context.forward(GameExit); true 
     case _ => false
   } 

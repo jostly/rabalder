@@ -41,7 +41,7 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         
         controller.keyDown(Keys.LEFT)
         
-        verify(level).movementDirection_=(Some(Left))
+        verify(level).playerAction_=(Some(Move(Left)))
       }
     }
     "right is pressed" should {      
@@ -51,7 +51,7 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         
         controller.keyDown(Keys.RIGHT)
         
-        verify(level).movementDirection_=(Some(Right))
+        verify(level).playerAction_=(Some(Move(Right)))
       }
     }
     "up is pressed" should {      
@@ -61,7 +61,7 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         
         controller.keyDown(Keys.UP)
         
-        verify(level).movementDirection_=(Some(Up))
+        verify(level).playerAction_=(Some(Move(Up)))
       }
     }
     "down is pressed" should {      
@@ -71,7 +71,7 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         
         controller.keyDown(Keys.DOWN)
         
-        verify(level).movementDirection_=(Some(Down))
+        verify(level).playerAction_=(Some(Move(Down)))
       }
     }    
     "left is released" should {
@@ -82,21 +82,21 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         val level = mock[Level]
         val controller = new LevelController(level)
         
-        when(level.movementDirection).thenReturn(Some(dir))
+        when(level.playerAction).thenReturn(Some(Move(dir)))
         
         controller.keyUp(key)
         
-        verify(level).movementDirection_=(None)        
+        verify(level).playerAction_=(None)        
       }
       "not change movement in the level if movement was not in that direction" in {
         val level = mock[Level]
         val controller = new LevelController(level)
         
-        when(level.movementDirection).thenReturn(Some(dir.turnLeft))
+        when(level.playerAction).thenReturn(Some(Move(dir.turnLeft)))
         
         controller.keyUp(key)
         
-        verify(level, never()).movementDirection_=(any())        
+        verify(level, never()).playerAction_=(any())        
       }
     }
     "right is released" should {
@@ -107,21 +107,21 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         val level = mock[Level]
         val controller = new LevelController(level)
         
-        when(level.movementDirection).thenReturn(Some(dir))
+        when(level.playerAction).thenReturn(Some(Move(dir)))
         
         controller.keyUp(key)
         
-        verify(level).movementDirection_=(None)        
+        verify(level).playerAction_=(None)        
       }
       "not change movement in the level if movement was not in that direction" in {
         val level = mock[Level]
         val controller = new LevelController(level)
         
-        when(level.movementDirection).thenReturn(Some(dir.turnLeft))
+        when(level.playerAction).thenReturn(Some(Move(dir.turnLeft)))
         
         controller.keyUp(key)
         
-        verify(level, never()).movementDirection_=(any())        
+        verify(level, never()).playerAction_=(any())        
       }
     }
     "up is released" should {
@@ -132,21 +132,21 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         val level = mock[Level]
         val controller = new LevelController(level)
         
-        when(level.movementDirection).thenReturn(Some(dir))
+        when(level.playerAction).thenReturn(Some(Move(dir)))
         
         controller.keyUp(key)
         
-        verify(level).movementDirection_=(None)        
+        verify(level).playerAction_=(None)        
       }
       "not change movement in the level if movement was not in that direction" in {
         val level = mock[Level]
         val controller = new LevelController(level)
         
-        when(level.movementDirection).thenReturn(Some(dir.turnLeft))
+        when(level.playerAction).thenReturn(Some(Move(dir.turnLeft)))
         
         controller.keyUp(key)
         
-        verify(level, never()).movementDirection_=(any())        
+        verify(level, never()).playerAction_=(any())        
       }
     }
     "down is released" should {
@@ -157,92 +157,90 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         val level = mock[Level]
         val controller = new LevelController(level)
         
-        when(level.movementDirection).thenReturn(Some(dir))
+        when(level.playerAction).thenReturn(Some(Move(dir)))
         
         controller.keyUp(key)
         
-        verify(level).movementDirection_=(None)        
+        verify(level).playerAction_=(None)        
       }
       "not change movement in the level if movement was not in that direction" in {
         val level = mock[Level]
         val controller = new LevelController(level)
         
-        when(level.movementDirection).thenReturn(Some(dir.turnLeft))
+        when(level.playerAction).thenReturn(Some(Move(dir.turnLeft)))
         
         controller.keyUp(key)
         
-        verify(level, never()).movementDirection_=(any())        
+        verify(level, never()).playerAction_=(any())        
       }
     }
-    
+    "space is pressed" should {
+      "do nothing if nothing else is pressed" in {
+        val level = mock[Level]
+        val controller = new LevelController(level)
+        
+        controller.keyDown(Keys.SPACE)
+        
+        verify(level, never()).playerAction_=(any())        
+      }
+      "change movement to removing" in {
+        val level = mock[Level]
+        val controller = new LevelController(level)
+
+        when(level.playerAction).thenReturn(Some(Move(Left)))
+
+        controller.keyDown(Keys.SPACE)
+        
+        verify(level).playerAction_=(Some(Remove(Left)))        
+      }
+    }
+    "space is pressed, then left" should {
+      "set player action to Remove(Left)" in {
+        val level = mock[Level]
+        val controller = new LevelController(level)
+        
+        controller.keyDown(Keys.SPACE)
+        controller.keyDown(Keys.LEFT)
+        
+        verify(level).playerAction_=(Some(Remove(Left)))                
+      }
+    }
+    "space is pressed, then left, then right" should {
+      "set player action to Remove(Left)" in {
+        val level = mock[Level]
+        val controller = new LevelController(level)
+        
+        controller.keyDown(Keys.SPACE)
+        controller.keyDown(Keys.LEFT)
+        
+        verify(level).playerAction_=(Some(Remove(Left)))
+        when(level.playerAction).thenReturn(Some(Remove(Left)))
+        
+        controller.keyDown(Keys.RIGHT)
+
+        verify(level).playerAction_=(Some(Remove(Right)))
+        
+      }
+    }
+    "space is pressed, then left, then space is released" should {
+      "set player action to Remove(Left)" in {
+        val level = mock[Level]
+        val controller = new LevelController(level)
+        
+        controller.keyDown(Keys.SPACE)
+        controller.keyDown(Keys.LEFT)
+        
+        verify(level).playerAction_=(Some(Remove(Left)))
+        when(level.playerAction).thenReturn(Some(Remove(Left)))
+        
+        controller.keyUp(Keys.SPACE)
+
+        verify(level).playerAction_=(Some(Move(Left)))
+        
+      }
+    }
   }
 
-//  "tick()" when {
-//    "player is not moving" should {
-//      "move left if Left is pressed" in {
-//        val level = mock[Level]
-//        when(level.playerPosition).thenReturn((17, 11))
-//        val controller = new LevelController(level)
-//        controller.keyDown(Keys.LEFT)
-//        
-//        controller.tick()
-//        
-//        verify(level).move((17, 11), (-1, 0))
-//      }
-//    }
-//    "player is already moving" should {
-//      "not move immediatedly when Left is pressed" in {
-//        val level = mock[Level]
-//        when(level.playerPosition).thenReturn((15, 9)).thenReturn((14, 9))
-//        val controller = new LevelController(level)
-//        controller.keyDown(Keys.LEFT)
-//        
-//        
-//        controller.tick()
-//
-//        verify(level).move((15, 9), (-1, 0))
-//        
-//        for (x <- 0 until (controller.ticksToMove-1))
-//          controller.tick()
-//
-//        verify(level, never()).move((14, 9), (-1, 0))
-//                  
-//        controller.tick()
-//        
-//        verify(level).move((14, 9), (-1, 0))
-//      }      
-//    }
-//    "moving onto a diamond" should {
-//      "increase the diamond count" in {
-//        val level = mock[Level]
-//        when(level.playerPosition).thenReturn((15, 9))
-//        when(level.move((15, 9), (1, 0))).thenReturn(Some(Diamond))
-//        
-//        val controller = new LevelController(level)
-//        controller.keyDown(Keys.RIGHT)
-//
-//        controller.tick()
-//        
-//        verify(level).diamondsTaken_=(1)
-//        
-//      }
-//    }
-//    "moving onto the exit" should {
-//      "mark the level as finished" in {
-//        val level = mock[Level]
-//        when(level.playerPosition).thenReturn((15, 9))
-//        when(level.move((15, 9), (0, 1))).thenReturn(Some(Exit))
-//        
-//        val controller = new LevelController(level)
-//        controller.keyDown(Keys.DOWN)
-//        
-//        controller.tick()
-//        
-//        verify(level).finished_=(true)
-//      }
-//    }
-//  }
-//  
   "Pressing ENTER" when {
     "the level is marked as finished" should {
       "forward to state GameExit" in {

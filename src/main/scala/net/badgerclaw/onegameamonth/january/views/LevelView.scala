@@ -167,6 +167,7 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     level.pollEvents.toSet[Event].foreach(_ match {
       case Moved(PlayerCharacter, _) => moveSound.play()
       case Removed(Diamond, PlayerCharacter) => diamondSound.play()
+      case Removed(Dirt, PlayerCharacter) => moveSound.play()
       case Exploded(_, _) => explodeSound.play()
       case Transformed(Diamond, FallingDiamond) => diamondFallSound.play()
       case Transformed(Boulder, FallingBoulder) => boulderFallSound.play(0.6f)

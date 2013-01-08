@@ -50,7 +50,7 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   
   var slowGrowth = 20
   
-  var movementDirection: Option[Direction] = None 
+  var playerAction: Option[PlayerAction] = None
   
   private var lastKnownPlayerPosition = (0, 0)
   
@@ -179,10 +179,16 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
               }
             }
             case Remove(direction) => {
-              if (tile == PlayerCharacter && get(x + direction.dx, y + direction.dy) == Diamond) {
-                addEvent(Removed(Diamond, PlayerCharacter))
-                diamondsTaken += 1
+              val rx = x + direction.dx
+              val ry = y + direction.dy
+              (tile, get(rx, ry)) match {
+                case (_: PlayerCharacterTile, _: DiamondTile) => {
+                  diamondsTaken += 1
+                }
+                case _ =>
               }
+              addEvent(Removed(get(rx, ry), tile))
+              set(rx, ry)(Space)
             }
             case Push(direction) => {
               val tx = x + direction.dx

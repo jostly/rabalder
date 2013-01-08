@@ -147,6 +147,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
   }
   "tick()" should {
     trait anActionTile extends SpaceTile with ActionTile
+    trait playerCharacterTile extends PlayerCharacterTile with ActionTile
     
     "call the act method on ActionTiles" in {
       val level = new Level()
@@ -275,6 +276,89 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.get(2, 2) should be (Space)
       
     }
+    "respond to Remove(Left) action" in {
+      val level = new Level()
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Remove(Left)))
+      
+      level.set(2,2)(tile)
+      level.set(1,2)(Dirt)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (tile)
+      level.get(1, 2) should be (Space)      
+    }
+    "respond to Remove(Right) action" in {
+      val level = new Level()
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Remove(Right)))
+      
+      level.set(2,2)(tile)
+      level.set(3,2)(Dirt)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (tile)
+      level.get(3, 2) should be (Space)      
+    }
+    "respond to Remove(Up) action" in {
+      val level = new Level()
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Remove(Up)))
+      
+      level.set(2,2)(tile)
+      level.set(2,1)(Dirt)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (tile)
+      level.get(2, 1) should be (Space)      
+    }    
+    "respond to Remove(Down) action" in {
+      val level = new Level()
+      val tile = mock[anActionTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Remove(Down)))
+      
+      level.set(2,2)(tile)
+      level.set(2,3)(Dirt)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (tile)
+      level.get(2, 3) should be (Space)      
+    }
+    "increase diamond count if removing a diamond" in {
+      val level = new Level()
+      val tile = mock[playerCharacterTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Remove(Down)))
+      
+      level.set(2,2)(tile)
+      level.set(2,3)(Diamond)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (tile)
+      level.get(2, 3) should be (Space)
+      
+      level.diamondsTaken should be (1)
+    }
+    "increase diamond count if removing a falling diamond" in {
+      val level = new Level()
+      val tile = mock[playerCharacterTile]
+      when(tile.act(2, 2, level)).thenReturn(List(Remove(Down)))
+      
+      level.set(2,2)(tile)
+      level.set(2,3)(FallingDiamond)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (tile)
+      level.get(2, 3) should be (Space)
+      
+      level.diamondsTaken should be (1)
+    }
+    
     "mark the level as finished if the player dies" in {
       val level = new Level()
       level.set(5,5)(FallingBoulder)

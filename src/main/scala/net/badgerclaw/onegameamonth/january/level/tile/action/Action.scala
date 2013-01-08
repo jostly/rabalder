@@ -22,10 +22,12 @@ import net.badgerclaw.onegameamonth.january.level.tile.Tile
 
 sealed abstract class Action
 
+sealed trait PlayerAction
+
 /**
  * Move the tile by offset
  */
-case class Move(offset: Offset) extends Action
+case class Move(offset: Offset) extends Action with PlayerAction
 
 /**
  * Become a new tile
@@ -40,7 +42,7 @@ case class Explode(offset: Offset, remains: Tile) extends Action
 /**
  * Remove the tile at offset
  */
-case class Remove(offset: Offset) extends Action
+case class Remove(offset: Offset) extends Action with PlayerAction
 
 /**
  * Push the tile in the specified direction

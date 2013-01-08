@@ -38,5 +38,5 @@ trait ReadOnlyLevel {
   
   def randomFloat: Float
   
-  def movementDirection: Option[Direction]
+  def playerAction: Option[PlayerAction]
 }
