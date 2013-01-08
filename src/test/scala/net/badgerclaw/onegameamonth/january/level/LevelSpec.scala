@@ -76,17 +76,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.get(10,1) should be (Diamond)
       level.get(38,16) should be (PlayerCharacter)
         
-    }
-    
-    "find the location of a specific tile" in {
-
-      val level: Level = Level(cave1)
-      
-      level.find(PlayerCharacter) should be ((38, 16))
-      
-      level.find(PreExit) should be ((3, 2))
-      
-    }
+    }    
   }
 
   "tick()" should {
@@ -325,7 +315,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       
       val level = new Level()
       val tile = mock[playerCharacterTile]
-      when(tile.act(2, 2, level)).thenReturn(List(Move(Down)))
+      when(tile.act(2, 2, level)).thenReturn(List(Become(PlayerCharacterExited), Move(Down)))
       
       level.set(2,2)(tile)
       level.set(2,3)(Exit)

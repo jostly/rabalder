@@ -39,7 +39,7 @@ case object PlayerCharacter extends PlayerCharacterTile with ExplosiveTile with 
 	      
 	    } else if (tile == Exit) {
 	      
-	      List(Move(dir))
+	      List(Become(PlayerCharacterExited), Move(dir))
 	      
 	    } else if ((dir == Left || dir == Right) && 
 	        tile == Boulder && 
@@ -61,3 +61,5 @@ case object PlayerCharacter extends PlayerCharacterTile with ExplosiveTile with 
     }
   }
 }
+
+case object PlayerCharacterExited extends PlayerCharacterTile

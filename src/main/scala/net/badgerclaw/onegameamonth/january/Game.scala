@@ -115,7 +115,7 @@ Ww...r......r.rd......r...ww..wr..d.w..W
 Wrr...w.....r.rd......w..r.wd.d.rw.r...W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""   
       
-  val cave4 = """20;5;20;36;120
+  val cave4 = """20;5;20;0;120
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 WX.....r....................r........r.W
 W.....r..............r.................W

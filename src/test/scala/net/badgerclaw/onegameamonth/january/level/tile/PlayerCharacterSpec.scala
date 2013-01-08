@@ -52,13 +52,6 @@ class PlayerCharacterSpec extends WordSpec with ShouldMatchers with MockitoSugar
 
         PlayerCharacter.act(3, 3, level) should be (Seq(Remove(Left), Move(Left)))        
       }
-      "move onto Exit (but not Remove)" in {
-        val level = mock[ReadOnlyLevel]
-        when(level.get(2,3)).thenReturn(Exit)
-        when(level.playerAction).thenReturn(Some(Move(Left)))
-
-        PlayerCharacter.act(3, 3, level) should be (Seq(Move(Left)))                
-      }
       "move onto a Diamond" in {
         val level = mock[ReadOnlyLevel]
         when(level.get(2,3)).thenReturn(Diamond)
@@ -104,13 +97,6 @@ class PlayerCharacterSpec extends WordSpec with ShouldMatchers with MockitoSugar
       "not move onto Amoeba" in {
         val level = mock[ReadOnlyLevel]
         when(level.get(2,3)).thenReturn(Amoeba)
-        when(level.playerAction).thenReturn(Some(Move(Left)))
-
-        PlayerCharacter.act(3, 3, level) should be (Seq.empty)        
-      }
-      "not move if level is finished" in {
-        val level = mock[ReadOnlyLevel]
-        when(level.get(2,3)).thenReturn(Space)
         when(level.playerAction).thenReturn(Some(Move(Left)))
 
         PlayerCharacter.act(3, 3, level) should be (Seq.empty)        
@@ -356,7 +342,15 @@ class PlayerCharacterSpec extends WordSpec with ShouldMatchers with MockitoSugar
         PlayerCharacter.act(3, 3, level) should be (Seq(Remove(Right)))        
       }
     }    
+    "moving onto an Exit" should {
+      "become PlayerCharacterExited" in {
+        val level = mock[ReadOnlyLevel]
+        when(level.get(4,3)).thenReturn(Exit)
+        when(level.playerAction).thenReturn(Some(Move(Right)))
 
+        PlayerCharacter.act(3, 3, level) should be (Seq(Become(PlayerCharacterExited), Move(Right)))
+      }
+    }
   }
   
   // TODO! Moving onto exit

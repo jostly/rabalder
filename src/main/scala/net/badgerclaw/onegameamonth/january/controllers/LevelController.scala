@@ -35,9 +35,7 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
     if (ticksLeftOnMove > 0) {
       ticksLeftOnMove = ticksLeftOnMove - 1
     } else {
-      if (!level.finished) {
-        level.tick()
-      }
+      level.tick()
       ticksLeftOnMove = ticksToMove
     }
   }

@@ -78,25 +78,28 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   }
   
   def playerPosition = {
-    val t = find(PlayerCharacter)
+    val t = findPlayer()
     if (t._1 >= 0 && t._2 >= 0) {
       lastKnownPlayerPosition = t
     }
     lastKnownPlayerPosition
   }
   
-  def playerExists = find(PlayerCharacter) != (-1, -1)
+  def playerExists = findPlayer() != (-1, -1)
   
   def get(x: Int, y: Int) = data(y*width+x)
   
   def set(x: Int, y: Int)(tile: Tile) {
     data(y*width+x) = tile
   }
-  
-  def find(tile: Tile): (Int, Int) = {
+
+  private def findPlayer(): (Int, Int) = {
     for (x <- 0 until width) {
       for (y <- 0 until height) {
-        if (get(x, y) == tile) return (x, y)
+        get(x, y) match {
+          case _: PlayerCharacterTile => return (x, y)
+          case _ =>
+        }
       }
     }
     (-1, -1)
@@ -127,7 +130,7 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
               set(tx, ty)(current)
               set(x, y)(Space)
               exclude(tx, ty)
-              if (destination == Exit) {
+              if (current == PlayerCharacterExited && destination == Exit) {
                 finished = true
               }
             }

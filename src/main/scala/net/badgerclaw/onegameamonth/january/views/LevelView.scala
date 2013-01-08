@@ -73,6 +73,7 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     FallingBoulder -> tilesBag.extract(2, 1),
     FallingDiamond -> tilesBag.extract(0, 5),
     PlayerCharacter -> tilesBag.extract(8, 0),
+    PlayerCharacterExited -> tilesBag.extract(9, 0),
     PreExit -> tilesBag.extract(7, 0),
     Exit -> tilesBag.extract(1, 2))
     
