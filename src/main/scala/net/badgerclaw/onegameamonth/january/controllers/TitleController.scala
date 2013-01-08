@@ -24,7 +24,7 @@ import net.badgerclaw.onegameamonth.january.state.StartLevel
 class TitleController(context: ControllerContext) extends InputAdapter with Controller {
 
   override def keyUp(key: Int): Boolean = {
-    context.forward(StartLevel())
+    context.forward(StartLevel)
     true
   }
   

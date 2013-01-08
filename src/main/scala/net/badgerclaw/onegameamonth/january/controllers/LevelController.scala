@@ -69,7 +69,11 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
     case Keys.SPACE => setSpace(state)
     case Keys.SHIFT_LEFT => setSpace(state)
     case Keys.SHIFT_RIGHT => setSpace(state)
-    case Keys.ENTER if (state == false && level.finished) => context.forward(GameExit); true 
+    case Keys.ENTER if (state == false && level.finished) => {
+      if (level.playerWon) context.forward(WinLevel)
+      else context.forward(StartLevel)
+      true 
+    } 
     case _ => false
   } 
     

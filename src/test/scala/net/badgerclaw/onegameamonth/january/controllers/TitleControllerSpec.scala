@@ -36,7 +36,7 @@ class TitleControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         
         controller.keyUp(0)
         
-        verify(context).forward(isA(classOf[StartLevel]))
+        verify(context).forward(StartLevel)
       }
     }
   }

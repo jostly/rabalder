@@ -30,7 +30,7 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   val width = 40
   val height = 22
   
-  var diamondsNeeded = 12
+  var diamondsNeeded = 0
   var diamondsWorth = 10
   var extraDiamondsWorth = 15
   var caveTime = 150
@@ -53,6 +53,8 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   var playerAction: Option[PlayerAction] = None
   
   private var lastKnownPlayerPosition = (0, 0)
+  
+  def playerWon: Boolean = finished && playerExists && time < caveTime
   
   private val random = new Random()
   

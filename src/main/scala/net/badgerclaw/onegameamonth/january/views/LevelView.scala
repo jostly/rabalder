@@ -149,7 +149,7 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
         else if (ranOutOfTime) "Too bad, no more time!"
         else "Congratulations, you won!"
           
-      preamble + " Press ENTER to exit"
+      preamble + " ENTER to continue."
     } else {
       val timeLeft = level.caveTime - level.time
       level.diamondsTaken.formatted("%02d") + "/" + 

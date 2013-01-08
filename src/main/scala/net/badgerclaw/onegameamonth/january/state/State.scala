@@ -22,6 +22,8 @@ sealed abstract class State
 
 case object Title extends State
 
-case class StartLevel() extends State
+case object StartLevel extends State
+
+case object WinLevel extends State
 
 case object GameExit extends State

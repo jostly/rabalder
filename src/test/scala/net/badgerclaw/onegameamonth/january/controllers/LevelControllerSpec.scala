@@ -242,19 +242,34 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
   }
 
   "Pressing ENTER" when {
-    "the level is marked as finished" should {
-      "forward to state GameExit" in {
+    "the level is marked as finished and player won" should {
+      "forward to state WinLevel" in {
         val context = mock[ControllerContext]
         val level = mock[Level]
         when(level.finished).thenReturn(true)
+        when(level.playerWon).thenReturn(true)
 
         val controller = new LevelController(level)(context)
 
         controller.keyUp(Keys.ENTER)
         
-        verify(context).forward(GameExit)
+        verify(context).forward(WinLevel)
       }
-    }    
+    }
+    "the level is marked as finished but the playerdid not win" should {
+      "forward to state StartLevel" in {
+        val context = mock[ControllerContext]
+        val level = mock[Level]
+        when(level.finished).thenReturn(true)
+        when(level.playerWon).thenReturn(false)
+
+        val controller = new LevelController(level)(context)
+
+        controller.keyUp(Keys.ENTER)
+        
+        verify(context).forward(StartLevel)
+      }      
+    }
   }  
   
 }

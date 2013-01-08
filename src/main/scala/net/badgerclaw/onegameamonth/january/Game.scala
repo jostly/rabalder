@@ -33,6 +33,7 @@ import net.badgerclaw.onegameamonth.january.level._
 import net.badgerclaw.onegameamonth.january.views._
 import net.badgerclaw.onegameamonth.january.state._
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.InputAdapter
 
 class Game extends ApplicationListener with RenderContext with ControllerContext {
   lazy val music = Gdx.audio.newMusic(Gdx.files.internal("music/DST-GameOn.mp3"))
@@ -115,7 +116,7 @@ Ww...r......r.rd......r...ww..wr..d.w..W
 Wrr...w.....r.rd......w..r.wd.d.rw.r...W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""   
       
-  val cave4 = """20;5;20;0;120
+  val cave4 = """20;5;20;36;120
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 WX.....r....................r........r.W
 W.....r..............r.................W
@@ -145,7 +146,7 @@ W. .. .rr..... ..r. X.... rr r..r. .  .W
 W ..r. .. .  .... .r.r. ...  r..r.d.. .W
 Wr.....  .q.  ... .r.r. ... wwwwwwwwwwwW
 W.r.d... .  ...... ..rr..r.... . ... . W
-Wwwwwwwwwwwww.r. ..   r.. .... ...r....W
+Wwwwwwwwwwwww.r. ..   r.. .... ...r....P
 Wr. r...... ..r. ... ..r.  ..r.  q.....W
 Wr. r...... .. r..r.... ...r......r.rr.W
 W... ..r  ... ..r.  ..r.  ... ....r.rr.W
@@ -187,25 +188,21 @@ Wddrr             rrrdrdd             rW
 Wdd..wwwwwwwwwwwwwdrrrdddwwwwwwwwwwwwwdW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""    
     
-  val level = Level(cave4)  
-  
+    
+  var levels = List(cave1, cave2, cave3, cave4, cave7, cave9)  
+    
   val resourceFactory: ResourceFactory = new ResourceFactory() {
     override def loadTexture(filename: String) = new Texture(Gdx.files.internal(filename))
     override def loadSound(filename: String) = Gdx.audio.newSound(Gdx.files.internal(filename))
   } 
   
-  lazy val titleView = new TitleView(resourceFactory)  
-  lazy val titleController = new TitleController(this)
-  
-  lazy val levelView = new LevelView(resourceFactory, level)
-  lazy val levelController = new LevelController(level)(this)
-    
-  var view: View = _
-  var controller: Controller = _
+  var view: View = DefaultView
+  var controller: Controller = DefaultController
   
   
   def create() {
     music.setVolume(0.4f)
+    music.setLooping(true)
 	music.play()
     camera.setToOrtho(true, 320, 240)
     hud.setToOrtho(true, 320, 240)
@@ -244,10 +241,9 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
     music.play()
   }
 	
-  def dispose() {    
-    titleView.dispose()
-    levelView.dispose()
-
+  def dispose() {
+    view.dispose()
+    
     batch.dispose() 
     
     music.stop()
@@ -255,14 +251,39 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
   }
   
   private def setViewController(view: View, controller: Controller) {
+    if (view != this.view) this.view.dispose()
     this.view = view
+    
     this.controller = controller
     Gdx.input.setInputProcessor(controller)
   }
   
   def forward(state: State) = state match {
-    case Title => setViewController(titleView, titleController)
-    case StartLevel() => setViewController(levelView, levelController); music.setVolume(0.1f)
-    case GameExit => Gdx.app.exit()
+    case Title => setViewController(new TitleView(resourceFactory) , new TitleController(this))
+    case StartLevel => levels match {
+      case x :: xs => {
+        val level = Level(x)
+        setViewController(new LevelView(resourceFactory, level), new LevelController(level)(this))
+        music.setVolume(0.1f)
+      }
+      case _ => forward(GameExit)
+    }
+    case WinLevel => {
+      levels = levels.tail
+      forward(StartLevel)
+    }
+    case GameExit => {
+      Gdx.app.exit()
+    }
   }  
+}
+
+object DefaultView extends View {
+  override def dispose() { }
+  
+  override def render(context: RenderContext) { }
+}
+
+object DefaultController extends InputAdapter with Controller {
+  override def tick() { }
 }
