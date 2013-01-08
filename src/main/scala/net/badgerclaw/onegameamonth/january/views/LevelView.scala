@@ -43,8 +43,10 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
   val tilesBag = new TextureBag(tileTextures, 16, 16, 8, 8)
   
   val butterfly = tilesBag.extract(0, 6, width = 8, height = 1)
+  val firefly = tilesBag.extract(0, 4, width = 8, height = 1)
   
   val tiles = Map[Tile, Array[TextureRegion]](
+    Amoeba -> tilesBag.extract(0, 3, width = 8, height = 1),
     Explosion(1, Space) -> tilesBag.extract(3, 2),
     Explosion(2, Space) -> tilesBag.extract(4, 2),
     Explosion(3, Space) -> tilesBag.extract(5, 2),
@@ -64,6 +66,10 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     Butterfly(Right) -> butterfly,
     Butterfly(Up) -> butterfly,
     Butterfly(Down) -> butterfly,
+    Firefly(Left) -> firefly,
+    Firefly(Right) -> firefly,
+    Firefly(Up) -> firefly,
+    Firefly(Down) -> firefly,
     FallingBoulder -> tilesBag.extract(2, 1),
     FallingDiamond -> tilesBag.extract(0, 5),
     PlayerCharacter -> tilesBag.extract(8, 0),
@@ -135,10 +141,16 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     context.batch.draw(scoreBoxTexture, 0, 0, 320, 16)
         
     val message = if (level.finished) {
-      (if (level.playerExists) "Congratulations, you won!" else "Too bad, you died!") +
-        " Press ENTER to exit"
+      val playerDied = !level.playerExists
+      val ranOutOfTime = level.time >= level.caveTime
+      val preamble: String =
+        if (playerDied) "Too bad, you died!"
+        else if (ranOutOfTime) "Too bad, no more time!"
+        else "Congratulations, you won!"
+          
+      preamble + " Press ENTER to exit"
     } else {
-      val timeLeft = level.caveTime - (frame / 25)
+      val timeLeft = level.caveTime - level.time
       level.diamondsTaken.formatted("%02d") + "/" + 
         level.diamondsNeeded.formatted("%02d") + "   " +
         timeLeft.formatted("%03d")
@@ -153,12 +165,14 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
   
   private def playSounds() {
     level.pollEvents.toSet[Event].foreach(_ match {
-//      case Move(PlayerCharacter, _) => moveSound.play()
-//      case Remove(Diamond, PlayerCharacter) => diamondSound.play()
-//      case Explode(_, _) => explodeSound.play()
-//      case Hit(FallingDiamond, _) => diamondFallSound.play()
-//      case Hit(FallingBoulder, _) => boulderFallSound.play(0.6f)
-//      case Transform(PreExit, Exit) => exitOpenSound.play()
+      case Moved(PlayerCharacter, _) => moveSound.play()
+      case Removed(Diamond, PlayerCharacter) => diamondSound.play()
+      case Exploded(_, _) => explodeSound.play()
+      case Transformed(Diamond, FallingDiamond) => diamondFallSound.play()
+      case Transformed(Boulder, FallingBoulder) => boulderFallSound.play(0.6f)
+      case Transformed(FallingDiamond, Diamond) => diamondFallSound.play()
+      case Transformed(FallingBoulder, Boulder) => boulderFallSound.play(0.6f)
+      case Transformed(PreExit, Exit) => exitOpenSound.play()
       case _ => 
     })    
   }

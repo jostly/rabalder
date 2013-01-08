@@ -30,44 +30,36 @@ sealed abstract class Event
  * Something has moved
  * 
  * Examples:
- * Move(PlayerCharacter, Dirt) -> player has moved onto dirt
- * Move(Boulder, _) -> a boulder starts moving
+ * Moved(PlayerCharacter, Dirt) -> player has moved onto dirt
+ * Moved(Boulder, _) -> a boulder starts moving
  * 
  */
-case class Move(what: Tile, onto: Tile) extends Event
-
-/**
- * Something hits something else (that is not Space)
- * 
- * Examples:
- * Hit(FallingDiamond, _) -> a diamond has fallen and hit something other than Space
- * Hit(FallingBoulder, Firefly) -> a falling boulder has hit a firefly 
- */
-case class Hit(what: Tile, where: Tile) extends Event
+case class Moved(what: Tile, onto: Tile) extends Event
 
 /**
  * Something has exploded, and will leave behind remains
  * 
- * Example: Explode(PlayerCharacter, Space), Explode(Butterfly, Diamond)
+ * Example: Exploded(PlayerCharacter, Space), Explode(Butterfly, Diamond)
  */
-case class Explode(what: Tile, remains: Tile) extends Event
+case class Exploded(what: Tile, remains: Tile) extends Event
 
 /**
  * A tile has been removed
  * 
  * Examples:
- * Remove(Diamond, PlayerCharacter) -> The player has collected a diamond
- * Remove(_, Amoeba) -> The amoeba has grown
+ * Removed(Diamond, PlayerCharacter) -> The player has collected a diamond
+ * Removed(_, Amoeba) -> The amoeba has grown
  */
-case class Remove(what: Tile, by: Tile) extends Event
+case class Removed(what: Tile, by: Tile) extends Event
 
 /**
  * A tile has transformed into another
  * 
  * Examples:
- * Transform(Amoeba, Boulder) -> The amoeba is transformed to boulders
- * Transform(PreExit, Exit) -> The exit has opened
+ * Transformed(Amoeba, Boulder) -> The amoeba is transformed to boulders
+ * Transformed(PreExit, Exit) -> The exit has opened
+ * Transformed(Boulder, FallingBoulder) -> A boulder has started falling
  */
-case class Transform(what: Tile, into: Tile) extends Event
+case class Transformed(what: Tile, into: Tile) extends Event
 
 

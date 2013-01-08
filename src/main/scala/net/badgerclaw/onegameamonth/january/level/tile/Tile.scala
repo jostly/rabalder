@@ -43,6 +43,10 @@ trait SteelWallTile extends Tile {
 
 trait ButterflyTile extends Tile
 
+trait FireflyTile extends Tile
+
+trait AmoebaTile extends Tile
+
 trait ExitTile extends Tile {
   override def canBeDestroyed = false
 }

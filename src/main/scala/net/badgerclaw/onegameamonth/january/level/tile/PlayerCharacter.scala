@@ -18,6 +18,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
-case object PlayerCharacter extends PlayerCharacterTile with ExplosiveTile {
+import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+import action._
+
+case object PlayerCharacter extends PlayerCharacterTile with ExplosiveTile with ActionTile {
   override def explodeTo = Space
+  
+  override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = {
+    def get(d: Offset) = level.get(x + d.dx, y + d.dy)
+    def canMoveOnto(t: Tile) = (t.isEmpty || t == Dirt || t == Diamond || t == FallingDiamond)
+    
+    level.movementDirection match {
+      case Some(dir) => {
+	    val tile = get(dir)
+	    
+	    if (canMoveOnto(tile)) {
+	      
+	      if (tile.isEmpty) List(Move(dir))
+	      else List(Remove(dir), Move(dir))
+	      
+	    } else if ((dir == Left || dir == Right) && 
+	        tile == Boulder && 
+	        get(dir+dir).isEmpty && 
+	        level.randomFloat <= 0.125f) {
+	     
+	      List(Push(dir), Move(dir))
+	    } else {
+	      List()
+	    }
+      }
+      case None => List()
+    }
+  }
 }

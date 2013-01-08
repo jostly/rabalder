@@ -139,6 +139,54 @@ W....r......r.rr..................r....W
 W...........r.rr.........r..r.r.......PW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""    
     
+  val cave7 = """75;10;20;15;120
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+W. .. .rr..... ..r. X.... rr r..r. .  .W
+W ..r. .. .  .... .r.r. ...  r..r.d.. .W
+Wr.....  .q.  ... .r.r. ... wwwwwwwwwwwW
+W.r.d... .  ...... ..rr..r.... . ... . W
+Wwwwwwwwwwwww.r. ..   r.. .... ...r....W
+Wr. r...... ..r. ... ..r.  ..r.  q.....W
+Wr. r...... .. r..r.... ...r......r.rr.W
+W... ..r  ... ..r.  ..r.  ... ....r.rr.W
+W... ..r. .r.... ...q......r.r..  r..r.W
+W  .. r.... ..r.r.... .  .......  d.. .W
+W. ... .. .  .. .  .....rr r..r. . r.. W
+W.. d..r.r.... .  ......r  r..r. .  ...W
+W.r.  ..r.  ... .r.r. ...  r.. .... ...W
+W....  .r.  ... .r.r. .r. . r.. r.... .W
+W.  .... ....  .. r r..r.... ...r... .rW
+W..... .  .rr. ...  r.. .r... r..r.r...W
+W r...... ..r. .r.... .  ..r.  r.......W
+W r...... .. r..r.... ...r......r.rr...W
+W. ..r. ... ..r.  .aa.  ... ....r.rr...W
+W. .drq..r.... ...r......r.rq.....dr...W
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
+    
+  val cave9 = """20;5;10;75;150
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+Wdddrrddrddr.rrrrdrdd.ddrddrddddrrdrdrrW
+Wdrrdddrrrdrddrrrrrrdrrd.drdrrrrdrddrrdW
+Wddrrrrrrrdrddrr.rrrdrrdddrdr.rrdrrrddrW
+Wrrdrddrrrrrrdrrddd..ddrrdrddrrdrdd.rrdW
+Wrrdrddrrrrrrdrrd.drdrrrrdrdrdrrddrrdrdW
+Wdddrrdrd.ddrrddrrdddrrdrdrrr.drddrrdrdW
+Wrrrrrdrrdddd..rrrdrdd.rdrddr.rrddddddrW
+Wdrddwwwwwww.wwwwwdrrrrdrwwwwww.wwwwwwrW
+Wd.dd             rddrrrd             rW
+Wdrdr  XP         rddrrrd             rW
+Wdrrd             r.rrddr             rW
+Wdrrd             ddddrdr             dW
+Wrddd             drrd.dr             dW
+Wrrrr             drrddrr             rW
+Wdrdd             .rdrrdr             rW
+Wdrdd            wwwwwwwww            rW
+Wrrrd                                 rW
+Wrrrd             dd.rdrd             rW
+Wddrr             rrrdrdd             rW
+Wdd..wwwwwwwwwwwwwdrrrdddwwwwwwwwwwwwwdW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""    
+    
   val level = Level(cave4)  
   
   val resourceFactory: ResourceFactory = new ResourceFactory() {
@@ -157,7 +205,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
   
   
   def create() {
-    music.setVolume(0.5f)
+    music.setVolume(0.4f)
 	music.play()
     camera.setToOrtho(true, 320, 240)
     hud.setToOrtho(true, 320, 240)
@@ -214,7 +262,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
   
   def forward(state: State) = state match {
     case Title => setViewController(titleView, titleController)
-    case StartLevel() => setViewController(levelView, levelController); music.setVolume(0.2f)
+    case StartLevel() => setViewController(levelView, levelController); music.setVolume(0.1f)
     case GameExit => Gdx.app.exit()
   }  
 }

@@ -19,20 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package net.badgerclaw.onegameamonth.january.level.tile
 
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
-import net.badgerclaw.onegameamonth.january.level.tile.action.Move
-import net.badgerclaw.onegameamonth.january.level.tile.action.Explode
-import net.badgerclaw.onegameamonth.january.level.tile.action.Become
-import net.badgerclaw.onegameamonth.january.level.tile.action.Action
-import net.badgerclaw.onegameamonth.january.level.tile.action.Right
-import net.badgerclaw.onegameamonth.january.level.tile.action.Left
-import net.badgerclaw.onegameamonth.january.level.tile.action.Down
-import net.badgerclaw.onegameamonth.january.level.tile.action.Delta
+import net.badgerclaw.onegameamonth.january.level.tile.action._
 
 trait FallingTile {
   this: Tile =>
     
   def checkFalling(x: Int, y: Int, level: ReadOnlyLevel, tileInMotion: Tile): Seq[Action] = {
-    def get(d: Delta) = level.get(x + d.dx, y + d.dy)
+    def get(d: Offset) = level.get(x + d.dx, y + d.dy)
 
     get(Down) match {
       case _: RoundedTile if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Become(tileInMotion), Move(Left))
@@ -45,7 +38,7 @@ trait FallingTile {
   }
   
   def continueFalling(x: Int, y: Int, level: ReadOnlyLevel, tileAtRest: Tile): Seq[Action] = {
-    def get(d: Delta) = level.get(x + d.dx, y + d.dy)
+    def get(d: Offset) = level.get(x + d.dx, y + d.dy)
     
     get(Down) match {
       case _: RoundedTile if (get(Left).isEmpty && get(Left+Down).isEmpty) => List(Move(Left))

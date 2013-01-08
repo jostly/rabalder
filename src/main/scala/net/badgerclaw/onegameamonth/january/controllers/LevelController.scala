@@ -23,43 +23,28 @@ import com.badlogic.gdx.Input.Keys
 import net.badgerclaw.onegameamonth.january.level._
 import net.badgerclaw.onegameamonth.january.level.tile._
 import net.badgerclaw.onegameamonth.january.state._
+import net.badgerclaw.onegameamonth.january.level.tile.action._
 
 class LevelController(level: Level)(implicit context: ControllerContext) extends InputAdapter with Controller {
 
-  private var buttons: Set[Button] = Set.empty
-
   private var ticksLeftOnMove = 0
-  final val ticksToMove = 7
+  final val ticksToMove = 6
   
-  private def movePlayer(dx: Int, dy: Int) {
-    level.move(level.playerPosition, (dx, dy)) match {
-      case Some(Diamond) => level.diamondsTaken = level.diamondsTaken + 1
-      case Some(Exit) => level.finished = true
-      case _ =>
-    }
-  }
-
   override def tick() {
     if (ticksLeftOnMove > 0) {
       ticksLeftOnMove = ticksLeftOnMove - 1
     } else {
-      level.tick()
       if (!level.finished) {
-        if (isPressed(Left)) movePlayer(-1, 0)
-        else if (isPressed(Right)) movePlayer(1, 0)
-        else if (isPressed(Up)) movePlayer(0, -1)
-        else if (isPressed(Down)) movePlayer(0, 1)                  
       }
-      ticksLeftOnMove = ticksToMove - 1
+      level.tick()
+      ticksLeftOnMove = ticksToMove
     }
   }
     
-  def isPressed(button: Button): Boolean = buttons.contains(button)
+  private def set(direction: Direction, state: Boolean): Boolean = {
+    if (state) level.movementDirection = Some(direction)
+    else if (level.movementDirection == Some(direction)) level.movementDirection = None
     
-  private def set(button: Button, state: Boolean): Boolean = {
-    if (state) buttons = buttons + button
-    else buttons = buttons - button
-           
     true
   }
     
@@ -78,9 +63,3 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
   
 }
 
-sealed abstract class Button
-
-case object Left extends Button
-case object Right extends Button
-case object Up extends Button
-case object Down extends Button

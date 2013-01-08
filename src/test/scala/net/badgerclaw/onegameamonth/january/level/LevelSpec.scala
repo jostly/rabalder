@@ -285,6 +285,14 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.finished should be (true)
       
     }
+    "mark the level as finished if time runs out" in {
+      val level = new Level()
+      level.caveTime = 0
+      
+      level.tick()
+      
+      level.finished should be (true)
+    }
   }
 }
 

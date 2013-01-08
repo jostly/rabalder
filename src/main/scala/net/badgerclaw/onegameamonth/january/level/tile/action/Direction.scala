@@ -18,15 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile.action
 
-sealed trait Direction {
-  this: Delta =>
-    
-  def turnRight: Delta with Direction
+sealed trait Direction extends Offset {
+  def turnRight: Direction
   
-  def turnLeft: Delta with Direction
+  def turnLeft: Direction
   
-  def ahead: Delta with Direction = this
-
+  def ahead: Direction = this
 }
 
 object Left extends Delta(-1, 0) with Direction {

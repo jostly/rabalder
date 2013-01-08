@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package net.badgerclaw.onegameamonth.january.level
 
 import net.badgerclaw.onegameamonth.january.level.tile.Tile
+import net.badgerclaw.onegameamonth.january.level.tile.action._
 
 trait ReadOnlyLevel {
   def get(x: Int, y: Int): Tile
@@ -26,4 +27,16 @@ trait ReadOnlyLevel {
   def diamondsNeeded: Int
   
   def diamondsTaken: Int
+  
+  def amoebaTooLarge: Boolean
+  
+  def amoebaCanGrow: Boolean
+  
+  def amoebaShouldGrow: Boolean
+  
+  def randomDirection: Direction
+  
+  def randomFloat: Float
+  
+  def movementDirection: Option[Direction]
 }

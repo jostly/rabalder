@@ -22,21 +22,21 @@ import net.badgerclaw.onegameamonth.january.level.tile.action._
 
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
 
-case class Butterfly(direction: Direction) extends ButterflyTile with ExplosiveTile with ActionTile {
-  override def explodeTo = Diamond
+case class Firefly(direction: Direction) extends FireflyTile with ExplosiveTile with ActionTile {
+  override def explodeTo = Space
   
   override def act(x: Int, y: Int, level: ReadOnlyLevel) = {
     def get(d: Offset) = level.get(x + d.dx, y + d.dy)
     def hasNeighbor(f: Tile => Boolean): Boolean =
       f(get(Down)) || f(get(Left)) || f(get(Up)) || f(get(Right))
         
-    if (hasNeighbor( n => n == PlayerCharacter || n == Amoeba )) {
+    if (hasNeighbor( n => n == PlayerCharacter || n == Amoeba)) {
       
       List(Explode(Delta(0,0), explodeTo))
       
-    } else if (get(direction.turnRight).isEmpty) {
+    } else if (get(direction.turnLeft).isEmpty) {
       
-      List(Become(Butterfly(direction.turnRight)), Move(direction.turnRight))
+      List(Become(Firefly(direction.turnLeft)), Move(direction.turnLeft))
       
     } else if(get(direction.ahead).isEmpty) {
       
@@ -44,8 +44,10 @@ case class Butterfly(direction: Direction) extends ButterflyTile with ExplosiveT
       
     } else {
       
-      List(Become(Butterfly(direction.turnLeft)))
+      List(Become(Firefly(direction.turnRight)))
       
     }
   }  
+
+
 }

@@ -18,34 +18,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile
 
-import net.badgerclaw.onegameamonth.january.level.tile.action._
-
 import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
+import action._
 
-case class Butterfly(direction: Direction) extends ButterflyTile with ExplosiveTile with ActionTile {
-  override def explodeTo = Diamond
+case object Amoeba extends AmoebaTile with ActionTile {
   
-  override def act(x: Int, y: Int, level: ReadOnlyLevel) = {
+  override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = {
     def get(d: Offset) = level.get(x + d.dx, y + d.dy)
-    def hasNeighbor(f: Tile => Boolean): Boolean =
-      f(get(Down)) || f(get(Left)) || f(get(Up)) || f(get(Right))
-        
-    if (hasNeighbor( n => n == PlayerCharacter || n == Amoeba )) {
+    def tryToGrow(d: Direction) =
+      if (get(d) == Dirt || get(d).isEmpty) List(Move(d))
+      else List()
       
-      List(Explode(Delta(0,0), explodeTo))
-      
-    } else if (get(direction.turnRight).isEmpty) {
-      
-      List(Become(Butterfly(direction.turnRight)), Move(direction.turnRight))
-      
-    } else if(get(direction.ahead).isEmpty) {
-      
-      List(Move(direction.ahead))
-      
-    } else {
-      
-      List(Become(Butterfly(direction.turnLeft)))
-      
-    }
-  }  
+    def canGrow(t: Tile) = (t == Space || t == Dirt)
+    
+    def checkGrowth() = 
+      canGrow(get(Up)) || canGrow(get(Right)) || canGrow(get(Down)) || canGrow(get(Left))    
+
+    if (level.amoebaTooLarge) List(Become(Boulder))
+    else if (!level.amoebaCanGrow) List(Become(Diamond))
+    else {
+      if (checkGrowth()) {
+        (if (level.amoebaShouldGrow) tryToGrow(level.randomDirection) else List()) :+ Become(Amoeba)
+      } else {
+        List()
+      }
+    }    
+  }
+    
 }

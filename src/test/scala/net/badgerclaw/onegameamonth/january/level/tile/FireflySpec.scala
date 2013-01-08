@@ -27,195 +27,194 @@ import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
 
 import action._
 
-class ButterflySpec extends WordSpec with ShouldMatchers with MockitoSugar {
+class FireflySpec extends WordSpec with ShouldMatchers with MockitoSugar {
   
-  "Butterfly" when {
-    "facing down" should {
-      val fly = Butterfly(Down)
-      "turn to their right and move there if possible" in {
-        val level = mock[ReadOnlyLevel]
-        when(level.get(2,3)).thenReturn(Space)
-        
-        fly.act(3, 3, level) should be (Seq(Become(Butterfly(Left)), Move(Left)))
-      }
-      "failing that, go straight if possible" in {
-        val level = mock[ReadOnlyLevel]
-        when(level.get(2,3)).thenReturn(Dirt)
-        when(level.get(3,4)).thenReturn(Space)
-        
-        fly.act(3, 3, level) should be (Seq(Move(Down)))
-      }
-      "failing that, turn to its left" in {
-        val level = mock[ReadOnlyLevel]
-        when(level.get(2,3)).thenReturn(Dirt)
-        when(level.get(3,4)).thenReturn(Dirt)
-        
-        fly.act(3, 3, level) should be (Seq(Become(Butterfly(Right))))
-      }
-    }
-    "facing left" should {
-      val fly = Butterfly(Left)
-      "turn to their right and move there if possible" in {
-        val level = mock[ReadOnlyLevel]
-        when(level.get(3,2)).thenReturn(Space)
-        
-        fly.act(3, 3, level) should be (Seq(Become(Butterfly(Up)), Move(Up)))
-      }
-      "failing that, go straight if possible" in {
-        val level = mock[ReadOnlyLevel]
-        when(level.get(3,2)).thenReturn(Dirt)
-        when(level.get(2,3)).thenReturn(Space)
-        
-        fly.act(3, 3, level) should be (Seq(Move(Left)))
-      }
-      "failing that, turn to its left" in {
-        val level = mock[ReadOnlyLevel]
-        when(level.get(3,2)).thenReturn(Dirt)
-        when(level.get(2,3)).thenReturn(Dirt)
-        
-        fly.act(3, 3, level) should be (Seq(Become(Butterfly(Down))))
-      }
-    }
+  "Firefly" when {
     "facing up" should {
-      val fly = Butterfly(Up)
-      "turn to their right and move there if possible" in {
+      val fly = Firefly(Up)
+      "turn to their left and move there if possible" in {
         val level = mock[ReadOnlyLevel]
-        when(level.get(4,3)).thenReturn(Space)
+        when(level.get(2,3)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Become(Butterfly(Right)), Move(Right)))
+        fly.act(3, 3, level) should be (Seq(Become(Firefly(Left)), Move(Left)))
       }
       "failing that, go straight if possible" in {
         val level = mock[ReadOnlyLevel]
-        when(level.get(4,3)).thenReturn(Dirt)
+        when(level.get(2,3)).thenReturn(Dirt)
         when(level.get(3,2)).thenReturn(Space)
         
         fly.act(3, 3, level) should be (Seq(Move(Up)))
       }
-      "failing that, turn to its left" in {
+      "failing that, turn to its right" in {
         val level = mock[ReadOnlyLevel]
-        when(level.get(4,3)).thenReturn(Dirt)
+        when(level.get(2,3)).thenReturn(Dirt)
         when(level.get(3,2)).thenReturn(Dirt)
         
-        fly.act(3, 3, level) should be (Seq(Become(Butterfly(Left))))
+        fly.act(3, 3, level) should be (Seq(Become(Firefly(Right))))
       }
     }
     "facing right" should {
-      val fly = Butterfly(Right)
-      "turn to their right and move there if possible" in {
+      val fly = Firefly(Right)
+      "turn to their left and move there if possible" in {
         val level = mock[ReadOnlyLevel]
-        when(level.get(3,4)).thenReturn(Space)
+        when(level.get(3,2)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Become(Butterfly(Down)), Move(Down)))
+        fly.act(3, 3, level) should be (Seq(Become(Firefly(Up)), Move(Up)))
       }
       "failing that, go straight if possible" in {
         val level = mock[ReadOnlyLevel]
-        when(level.get(3,4)).thenReturn(Dirt)
+        when(level.get(3,2)).thenReturn(Dirt)
         when(level.get(4,3)).thenReturn(Space)
         
         fly.act(3, 3, level) should be (Seq(Move(Right)))
       }
-      "failing that, turn to its left" in {
+      "failing that, turn to its right" in {
         val level = mock[ReadOnlyLevel]
-        when(level.get(3,4)).thenReturn(Dirt)
+        when(level.get(3,2)).thenReturn(Dirt)
         when(level.get(4,3)).thenReturn(Dirt)
         
-        fly.act(3, 3, level) should be (Seq(Become(Butterfly(Up))))
+        fly.act(3, 3, level) should be (Seq(Become(Firefly(Down))))
+      }
+    }
+    "facing down" should {
+      val fly = Firefly(Down)
+      "turn to their left and move there if possible" in {
+        val level = mock[ReadOnlyLevel]
+        when(level.get(4,3)).thenReturn(Space)
+        
+        fly.act(3, 3, level) should be (Seq(Become(Firefly(Right)), Move(Right)))
+      }
+      "failing that, go straight if possible" in {
+        val level = mock[ReadOnlyLevel]
+        when(level.get(4,3)).thenReturn(Dirt)
+        when(level.get(3,4)).thenReturn(Space)
+        
+        fly.act(3, 3, level) should be (Seq(Move(Down)))
+      }
+      "failing that, turn to its right" in {
+        val level = mock[ReadOnlyLevel]
+        when(level.get(4,3)).thenReturn(Dirt)
+        when(level.get(3,4)).thenReturn(Dirt)
+        
+        fly.act(3, 3, level) should be (Seq(Become(Firefly(Left))))
+      }
+    }
+    "facing left" should {
+      val fly = Firefly(Left)
+      "turn to their left and move there if possible" in {
+        val level = mock[ReadOnlyLevel]
+        when(level.get(3,4)).thenReturn(Space)
+        
+        fly.act(3, 3, level) should be (Seq(Become(Firefly(Down)), Move(Down)))
+      }
+      "failing that, go straight if possible" in {
+        val level = mock[ReadOnlyLevel]
+        when(level.get(3,4)).thenReturn(Dirt)
+        when(level.get(2,3)).thenReturn(Space)
+        
+        fly.act(3, 3, level) should be (Seq(Move(Left)))
+      }
+      "failing that, turn to its right" in {
+        val level = mock[ReadOnlyLevel]
+        when(level.get(3,4)).thenReturn(Dirt)
+        when(level.get(2,3)).thenReturn(Dirt)
+        
+        fly.act(3, 3, level) should be (Seq(Become(Firefly(Up))))
       }
     }
     "exploding" should {
-      "turn into Diamond" in {
-        Butterfly(Up).explodeTo should be (Diamond)
+      "turn into Space" in {
+        Firefly(Up).explodeTo should be (Space)
       }
     }    
     "above a player character" should {
       "explode even if it could move instead" in {
-        val fly = Butterfly(Up)
+        val fly = Firefly(Up)
         val level = mock[ReadOnlyLevel]
         
         when(level.get(3,4)).thenReturn(PlayerCharacter)
         when(level.get(4,3)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Space)))
       }
     }
     "to the right of a player character" should {
       "explode even if it could move instead" in {
-        val fly = Butterfly(Up)
+        val fly = Firefly(Up)
         val level = mock[ReadOnlyLevel]
         
         when(level.get(2,3)).thenReturn(PlayerCharacter)
         when(level.get(4,3)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Space)))
       }
     }
     "below of a player character" should {
       "explode even if it could move instead" in {
-        val fly = Butterfly(Up)
+        val fly = Firefly(Up)
         val level = mock[ReadOnlyLevel]
         
         when(level.get(3,2)).thenReturn(PlayerCharacter)
         when(level.get(4,3)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Space)))
       }
     }
     "to the left of a player character" should {
       "explode even if it could move instead" in {
-        val fly = Butterfly(Down)
+        val fly = Firefly(Down)
         val level = mock[ReadOnlyLevel]
         
         when(level.get(4,3)).thenReturn(PlayerCharacter)
         when(level.get(2,3)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Space)))
       }
     }
     "above amoeba" should {
       "explode even if it could move instead" in {
-        val fly = Butterfly(Up)
+        val fly = Firefly(Up)
         val level = mock[ReadOnlyLevel]
         
         when(level.get(3,4)).thenReturn(Amoeba)
         when(level.get(4,3)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Space)))
       }
     }
     "to the right of amoeba" should {
       "explode even if it could move instead" in {
-        val fly = Butterfly(Up)
+        val fly = Firefly(Up)
         val level = mock[ReadOnlyLevel]
         
         when(level.get(2,3)).thenReturn(Amoeba)
         when(level.get(4,3)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Space)))
       }
     }
     "below of amoeba" should {
       "explode even if it could move instead" in {
-        val fly = Butterfly(Up)
+        val fly = Firefly(Up)
         val level = mock[ReadOnlyLevel]
         
         when(level.get(3,2)).thenReturn(Amoeba)
         when(level.get(4,3)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Space)))
       }
     }
     "to the left of amoeba" should {
       "explode even if it could move instead" in {
-        val fly = Butterfly(Down)
+        val fly = Firefly(Down)
         val level = mock[ReadOnlyLevel]
         
         when(level.get(4,3)).thenReturn(Amoeba)
         when(level.get(2,3)).thenReturn(Space)
         
-        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Diamond)))
+        fly.act(3, 3, level) should be (Seq(Explode(Delta(0,0), Space)))
       }
-    }
-    
+    }    
   } 
 
 }

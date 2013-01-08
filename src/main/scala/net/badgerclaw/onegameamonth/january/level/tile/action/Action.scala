@@ -22,8 +22,27 @@ import net.badgerclaw.onegameamonth.january.level.tile.Tile
 
 sealed abstract class Action
 
-case class Move(offset: Delta) extends Action
+/**
+ * Move the tile by offset
+ */
+case class Move(offset: Offset) extends Action
 
+/**
+ * Become a new tile
+ */
 case class Become(what: Tile) extends Action
 
-case class Explode(offset: Delta, remains: Tile) extends Action
+/**
+ * Explode with center offset, leaving behind remains eventually
+ */
+case class Explode(offset: Offset, remains: Tile) extends Action
+
+/**
+ * Remove the tile at offset
+ */
+case class Remove(offset: Offset) extends Action
+
+/**
+ * Push the tile in the specified direction
+ */
+case class Push(direction: Direction) extends Action

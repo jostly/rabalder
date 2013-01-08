@@ -18,7 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.level.tile.action
 
-case class Delta(val dx: Int, val dy: Int) {
-  def +(that: Delta) = Delta(dx + that.dx, dy + that.dy)
+trait Offset {
+  def dx: Int
+  
+  def dy: Int
+  
+  def +(that: Offset): Offset
+}
+
+case class Delta(override val dx: Int, override val dy: Int) extends Offset {
+  override def +(that: Offset) = Delta(dx + that.dx, dy + that.dy)
 }
 

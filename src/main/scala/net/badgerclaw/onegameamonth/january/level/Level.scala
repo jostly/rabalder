@@ -20,7 +20,7 @@ package net.badgerclaw.onegameamonth.january.level
 
 import scala.annotation.tailrec
 import scala.util.Random
-import event.{Move => MoveEvent,Explode => ExplodeEvent, _}
+import event._
 import tile._
 import net.badgerclaw.onegameamonth.january.level.tile.action._
 
@@ -34,6 +34,9 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   var diamondsWorth = 10
   var extraDiamondsWorth = 15
   var caveTime = 150
+  var ticksElapsed = 0
+  
+  def time = ticksElapsed / 10
   
   var events: List[Event] = List.empty
   
@@ -41,14 +44,37 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   
   var finished = false
   
+  var amoebaTooLarge = false
+  
+  var amoebaCanGrow = true
+  
+  var slowGrowth = 20
+  
+  var movementDirection: Option[Direction] = None 
+  
   private var lastKnownPlayerPosition = (0, 0)
   
   private val random = new Random()
+  
+  def randomFloat = random.nextFloat
+  
+  def amoebaShouldGrow: Boolean = randomFloat <= (if (time > slowGrowth) 0.25f else 0.03125f)
+  
+  def randomDirection = random.nextInt(4) match {
+    case 0 => Up
+    case 1 => Right
+    case 2 => Down
+    case 3 => Left
+  }
   
   def pollEvents = {
     val t = events
     events = List.empty
     t
+  }
+  
+  private def addEvent(e: Event) {
+    events ::= e
   }
   
   def playerPosition = {
@@ -83,7 +109,7 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
     def doMove(): Option[Tile] = {
 	  set(newpos._1, newpos._2)(get(position._1, position._2))
 	  set(position._1, position._2)(Space)
-	  events = Remove(target, PlayerCharacter) :: MoveEvent(PlayerCharacter, target) :: events 
+	  events = Removed(target, PlayerCharacter) :: Moved(PlayerCharacter, target) :: events 
 	  Some(target)      
     }
     def dontMove: Option[Tile] = None
@@ -107,24 +133,37 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   }
   
   def tick() {
+    var lastAmoebaCount = 0
+    var amoebaCouldGrow = false
     var excluded = Set.empty[(Int, Int)]
-    for (x <- 1 until width-1) {
-      for (y <- 1 until height-1 if (!excluded.contains((x,y)))) {
+    for (y <- 0 until height) {
+      for (x <- 0 until width if (!excluded.contains((x,y)))) {
         def exclude(ex: Int, ey: Int) {
           if (ey > y || (ey == y) && (ex > x)) {
         	excluded += ((ex, ey))
           }
         }
-        get(x,y) match {
+        val tile = get(x,y)
+        if (tile == Amoeba) lastAmoebaCount += 1
+        
+        tile match {
           case action: ActionTile => action.act(x, y, this).foreach( {
             case Move(direction) => {
               val tile = get(x, y)
+              addEvent(Moved(tile, get(x + direction.dx, y + direction.dy)))
               set(x + direction.dx, y + direction.dy)(tile)
               set(x, y)(Space)
               exclude(x + direction.dx, y + direction.dy)
             }
-            case Become(what) => set(x, y)(what)
+            case Become(what) => {
+              addEvent(Transformed(get(x, y), what))
+              set(x, y)(what)
+              if (what == Amoeba) {
+                amoebaCouldGrow = true
+              }
+            }
             case Explode(direction, remains) => {
+              addEvent(Exploded(get(x, y), remains))
               for (explosionX <- -1 to 1) {
                 for (explosionY <- -1 to 1) {
                   val ex = x + direction.dx + explosionX
@@ -139,68 +178,32 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
                 }
               }
             }
-            case _ =>
+            case Remove(direction) => {
+              if (tile == PlayerCharacter && get(x + direction.dx, y + direction.dy) == Diamond) {
+                addEvent(Removed(Diamond, PlayerCharacter))
+                diamondsTaken += 1
+              }
+            }
+            case Push(direction) => {
+              val tx = x + direction.dx
+              val ty = y + direction.dy
+              val pushedTile = get(tx, ty)
+              addEvent(Moved(pushedTile, get(tx + direction.dx, ty + direction.dy)))
+              set(tx + direction.dx, ty + direction.dy)(pushedTile)
+              set(tx, ty)(Space)
+              exclude(tx + direction.dx, ty + direction.dy)
+            }
           })
           case _ =>
         }
       }
+    }   
+    ticksElapsed += 1
+    if (time >= caveTime) {
+      finished = true
     }
-    
-    
-//    for (x <- 1 until width-1) {
-//      for (y <- 1 until height-1) {
-//        get(x,y) match {
-//          case tile: CanFall => get(x, y+1) match {
-//            case Space => {
-//              set(x, y+1)(tile.falling)
-//              set(x, y)(Space)
-//            }
-//            case r: Rounded => {
-//              if (get(x-1, y) == Space && get(x-1, y+1) == Space) {
-//            	set(x-1, y)(tile.falling)
-//            	set(x, y)(Space)
-//              } else if (get(x+1, y) == Space && get(x+1, y+1) == Space) {
-//            	set(x+1, y)(tile.falling)
-//            	set(x, y)(Space)                  
-//              } else if (tile.isFalling) {
-//                set(x, y)(tile.stationary)                
-//              }
-//              events = Hit(tile, r) :: events
-//            }
-//            case PlayerCharacter if (tile.isFalling) => {
-//              for (dx <- x-1 to x+1) {
-//                for (dy <- y to y+2) {
-//                  get(dx,dy) match {
-//                    case _: Permanent =>
-//                    case _ => set(dx,dy)(Explosion(0)) 
-//                  }
-//                  
-//                }
-//              }
-//              finished = true
-//              events = Explode(PlayerCharacter, Space) :: Hit(tile, PlayerCharacter) :: events
-//            }
-//            case t => if (tile.isFalling) {
-//              set(x, y)(tile.stationary)
-//              events = Hit(tile, t) :: events
-//            }
-//          }
-//          case PreExit if (diamondsTaken >= diamondsNeeded) => { 
-//            set(x, y)(Exit)
-//            events = Transform(PreExit, Exit) :: events
-//          }
-//          case _ =>
-//        }
-//      }
-//    }
-//    
-//    for (i <- 0 until data.length) {
-//      data(i) = data(i) match {
-//        case scanned: Scanned => scanned.reset
-//        case animated: Animated => animated.next
-//        case t: Tile => t
-//      }
-//    }    
+    if (lastAmoebaCount >= 200) amoebaTooLarge = true
+    amoebaCanGrow = amoebaCouldGrow
   }
   
   def toDebugString = {
@@ -225,6 +228,7 @@ object Level {
     
     params match {
       case growth :: diamondsWorth :: extraDiamondsWorth :: diamondsNeeded :: caveTime :: Nil => {
+        level.slowGrowth = growth.toInt
         level.diamondsWorth = diamondsWorth.toInt
         level.extraDiamondsWorth = extraDiamondsWorth.toInt
         level.diamondsNeeded = diamondsNeeded.toInt
@@ -243,7 +247,9 @@ object Level {
     case 'r' => Boulder
     case 'X' => PlayerCharacter
     case 'd' => Diamond
-    case 'B' => Butterfly(Left)
+    case 'B' => Butterfly(Down)
+    case 'q' => Firefly(Left)
+    case 'a' => Amoeba
     case 'P' => PreExit
     case _ => Space
   }
@@ -259,6 +265,8 @@ object Level {
     case Diamond => "d"
     case FallingDiamond => "D"
     case Butterfly(_) => "B"
+    case Firefly(_) => "q"
+    case Amoeba => "a"
     case PlayerCharacter => "X"
     case Space => " "
     case _ => "?"
