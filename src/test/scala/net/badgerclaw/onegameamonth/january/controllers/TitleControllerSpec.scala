@@ -23,7 +23,10 @@ import org.scalatest.WordSpec
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.Matchers.{isA}
-import net.badgerclaw.onegameamonth.january.state.StartLevel
+
+import com.badlogic.gdx.Input.Keys
+
+import net.badgerclaw.onegameamonth.january.state._
 
 class TitleControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   
@@ -34,9 +37,9 @@ class TitleControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         
         val controller = new TitleController(context)
         
-        controller.keyUp(0)
+        controller.keyUp(Keys.SPACE)
         
-        verify(context).forward(StartLevel)
+        verify(context).forward(BeginPlay(1))
       }
     }
   }

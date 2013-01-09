@@ -19,12 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package net.badgerclaw.onegameamonth.january.controllers
 
 import com.badlogic.gdx.InputAdapter
-import net.badgerclaw.onegameamonth.january.state.StartLevel
+import net.badgerclaw.onegameamonth.january.state._
 
 class TitleController(context: ControllerContext) extends InputAdapter with Controller {
 
   override def keyUp(key: Int): Boolean = {
-    context.forward(StartLevel)
+    context.forward(BeginPlay(1))
     true
   }
   

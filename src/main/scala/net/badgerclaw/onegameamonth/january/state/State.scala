@@ -18,9 +18,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package net.badgerclaw.onegameamonth.january.state
 
+import net.badgerclaw.onegameamonth.january.level.OriginalCaveData
+
 sealed abstract class State
 
 case object Title extends State
+
+case class BeginPlay(level: Int) extends State {
+  assert(level > 0, "level must be at least 1")
+  assert(level <= OriginalCaveData.data.length, "level must not be higher than " + OriginalCaveData.data.length)
+}
 
 case object StartLevel extends State
 

@@ -61,7 +61,7 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   
   private var lastKnownPlayerPosition = (0, 0)
   
-  def playerWon: Boolean = finished && playerExists && time < caveTime
+  def playerWon: Boolean = finished && playerExists && time <= caveTime
   
   private val random = new Random()
   
@@ -69,7 +69,15 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   
   def amoebaShouldGrow: Boolean = randomFloat <= (if (time > slowGrowth) 0.25f else 0.03125f)
   
-  def scorePerDiamond = if (diamondsTaken > diamondsNeeded) extraDiamondsWorth else diamondsWorth
+  def scorePerDiamond = if (diamondsTaken >= diamondsNeeded) extraDiamondsWorth else diamondsWorth
+  
+  def addScore(s: Int) {
+    score += s
+  }
+  
+  def addTime(t: Int) {
+    ticksElapsed += t * 10
+  }
   
   def randomDirection = random.nextInt(4) match {
     case 0 => Up
@@ -178,8 +186,8 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
               val ry = y + direction.dy
               (tile, get(rx, ry)) match {
                 case (_: PlayerCharacterTile, _: DiamondTile) => {
-                  diamondsTaken += 1
                   score += scorePerDiamond
+                  diamondsTaken += 1
                 }
                 case _ =>
               }
@@ -199,8 +207,10 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
           case _ =>
         }
       }
-    }   
-    ticksElapsed += 1
+    }
+    if (!finished) {
+      ticksElapsed += 1
+    }
     if (time >= caveTime) {
       finished = true
     }
