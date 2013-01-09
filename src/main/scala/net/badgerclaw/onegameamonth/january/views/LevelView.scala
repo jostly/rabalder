@@ -141,7 +141,7 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     
     context.batch.draw(scoreBoxTexture, 0, 0, 320, 16)
         
-    val message = if (level.finished) {
+    if (level.finished) {
       val playerDied = !level.playerExists
       val ranOutOfTime = level.time >= level.caveTime
       val preamble: String =
@@ -149,16 +149,19 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
         else if (ranOutOfTime) "Too bad, no more time!"
         else "Congratulations, you won!"
           
-      preamble + " ENTER to continue."
+      
+      font.draw(context.batch, preamble + " ENTER to continue.", 2, 2) 
     } else {
       val timeLeft = level.caveTime - level.time
-      level.diamondsTaken.formatted("%02d") + "/" + 
+      val message = level.diamondsTaken.formatted("%02d") + "/" + 
         level.diamondsNeeded.formatted("%02d") + "   " +
-        timeLeft.formatted("%03d") + "  " +
+        timeLeft.formatted("%03d") + "   " +
         level.score.formatted("%06d")
+        
+
+      BigFont.draw(context.batch, message, 0, 0)
     }
     
-    font.draw(context.batch, message, 2, 2) 
         
     context.batch.end()
 

@@ -79,5 +79,36 @@ class TextureBagSpec extends WordSpec with ShouldMatchers with MockitoSugar {
       
     }
   }
+  
+  "TextureBagStream" should {
+    "be created from a TextureBag" in {
+      val tex = mock[Texture]
+      when(tex.getWidth()).thenReturn(32)
+      when(tex.getHeight()).thenReturn(32)
+      
+      var stream = new TextureBag(tex, 8, 8, 8, 8).toStream
+      
+      stream.head.getRegionX() should be (0)
+      stream.head.getRegionY() should be (8)
+      
+      stream = stream.tail
+
+      stream.head.getRegionX() should be (16)
+      stream.head.getRegionY() should be (8)
+
+      stream = stream.tail
+
+      stream.head.getRegionX() should be (0)
+      stream.head.getRegionY() should be (24)
+
+      stream = stream.tail
+
+      stream.head.getRegionX() should be (16)
+      stream.head.getRegionY() should be (24)
+      
+      stream.tail should be (Stream.empty)
+    }
+  }
+
 
 }

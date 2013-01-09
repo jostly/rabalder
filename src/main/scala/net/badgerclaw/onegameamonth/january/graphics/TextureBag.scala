@@ -33,7 +33,7 @@ class TextureBag(texture: Texture, width: Int, height: Int, horizontalSpacing: I
     res
   }
   
-  private def extractSingle(x: Int, y: Int): TextureRegion = {
+  def extractSingle(x: Int, y: Int): TextureRegion = {
     val region = new TextureRegion(
       texture, 
       x * (width + horizontalSpacing), 
@@ -42,6 +42,18 @@ class TextureBag(texture: Texture, width: Int, height: Int, horizontalSpacing: I
       height)
     region.flip(false, true)
     region
+  }
+  
+  def toStream: Stream[TextureRegion] = {
+    val xmax = texture.getWidth() / (width + horizontalSpacing)
+    val ymax = texture.getHeight() / (height + verticalSpacing)
+    
+    def streamFrom(x: Int, y: Int): Stream[TextureRegion] =
+      if (y == ymax) Stream.empty
+      else if (x == xmax) streamFrom(0, y+1)
+      else extractSingle(x, y) #:: streamFrom(x+1, y)
+    
+    streamFrom(0, 0)
   }
 
 }
