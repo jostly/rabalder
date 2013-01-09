@@ -75,7 +75,7 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     PlayerCharacter -> tilesBag.extract(8, 0),
     PlayerCharacterExited -> tilesBag.extract(9, 0),
     PreExit -> tilesBag.extract(7, 0),
-    Exit -> tilesBag.extract(1, 2))
+    Exit -> (List.empty.padTo(4, tilesBag.extract(1, 2)(0)) ++ List.empty.padTo(4, tilesBag.extract(7, 0)(0))).toArray)
     
   val font = new BitmapFont(true)
   
