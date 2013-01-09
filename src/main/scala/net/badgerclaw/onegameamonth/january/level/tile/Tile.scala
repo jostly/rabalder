@@ -41,6 +41,8 @@ trait SteelWallTile extends Tile {
   override def canBeDestroyed = false
 }
 
+trait MagicWallTile extends Tile
+
 trait ButterflyTile extends Tile
 
 trait FireflyTile extends Tile

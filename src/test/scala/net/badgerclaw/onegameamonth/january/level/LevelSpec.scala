@@ -25,6 +25,7 @@ import org.mockito.Mockito._
 import org.mockito.Matchers.{isA, anyInt}
 import tile._
 import tile.action._
+import event._
 
 class LevelSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   val cave1 = """
@@ -292,7 +293,71 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       
       level.diamondsTaken should be (1)
     }
-    
+    "a FallingBoulder turning into a FallingDiamond should activate magic walls" in {
+      val level = new Level()
+      
+      level.set(2,2)(FallingBoulder)
+      level.set(2,3)(MagicWall)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (Space)
+      level.get(2, 3) should be (MagicWall)
+      level.get(2, 4) should be (FallingDiamond)
+      
+      level.magicWallExpirationTime should be (level.time + level.magicWallMillingTime)
+    }
+    "a FallingBoulder falling into a magic wall should activate magic walls" in {
+      val level = new Level()
+      
+      level.set(2,2)(FallingBoulder)
+      level.set(2,3)(MagicWall)
+      level.set(2,4)(Dirt)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (Space)
+      level.get(2, 3) should be (MagicWall)
+      level.get(2, 4) should be (Dirt)
+      
+      level.magicWallExpirationTime should be (level.time + level.magicWallMillingTime)
+    }    
+    "a FallingDiamond turning into a FallingBoulder should activate magic walls" in {
+      val level = new Level()
+      
+      level.set(2,2)(FallingDiamond)
+      level.set(2,3)(MagicWall)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (Space)
+      level.get(2, 3) should be (MagicWall)
+      level.get(2, 4) should be (FallingBoulder)
+      
+      level.magicWallExpirationTime should be (level.time + level.magicWallMillingTime)
+    }    
+    "a FallingDiamond falling into a magic wall should activate magic walls" in {
+      val level = new Level()
+      
+      level.set(2,2)(FallingDiamond)
+      level.set(2,3)(MagicWall)
+      level.set(2,4)(Dirt)
+      
+      level.tick()
+      
+      level.get(2, 2) should be (Space)
+      level.get(2, 3) should be (MagicWall)
+      level.get(2, 4) should be (Dirt)
+      
+      level.magicWallExpirationTime should be (level.time + level.magicWallMillingTime)
+    }
+    "mark magic walls as inactive if they've been activated and the milling time has passed" in {
+      val level = new Level()
+      level.magicWallExpirationTime = 0
+
+      level.magicWallHasExpired should be (true)
+      
+    }
     "mark the level as finished if the player dies" in {
       val level = new Level()
       level.set(5,5)(FallingBoulder)

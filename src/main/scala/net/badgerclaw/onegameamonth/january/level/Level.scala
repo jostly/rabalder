@@ -34,7 +34,14 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   var diamondsWorth = 10
   var extraDiamondsWorth = 15
   var caveTime = 150
+  var magicWallMillingTime = 20
+  var slowGrowth = 20
+  
   var ticksElapsed = 0
+  
+  var magicWallExpirationTime = -1
+  
+  def magicWallHasExpired = (magicWallExpirationTime >= 0 && magicWallExpirationTime <= time)
   
   var score: Int = 0
   
@@ -49,8 +56,6 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   var amoebaTooLarge = false
   
   var amoebaCanGrow = true
-  
-  var slowGrowth = 20
   
   var playerAction: Option[PlayerAction] = None
   
@@ -143,6 +148,11 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
               set(x, y)(what)
               if (what == Amoeba) {
                 amoebaCouldGrow = true
+              }
+              if ((tile == FallingBoulder && what == FallingDiamond) || 
+                  (tile == FallingDiamond && what == FallingBoulder)) {
+                magicWallExpirationTime = time + magicWallMillingTime
+                addEvent(Transformed(tile, what))
               }
             }
             case Explode(direction, remains) => {

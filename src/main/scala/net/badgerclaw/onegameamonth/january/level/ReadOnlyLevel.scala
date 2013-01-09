@@ -39,4 +39,6 @@ trait ReadOnlyLevel {
   def randomFloat: Float
   
   def playerAction: Option[PlayerAction]
+  
+  def magicWallHasExpired: Boolean
 }

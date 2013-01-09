@@ -164,7 +164,7 @@ object OriginalCaveData {
       case 0x00   => Space
       case 0x01 => Dirt
       case 0x02 => Wall
-      //case 0x03 => MagicWall
+      case 0x03 => MagicWall
       case 0x04 => PreExit
       case 0x07 => SteelWall
       case 0x08 => Firefly(Left)

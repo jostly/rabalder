@@ -48,8 +48,19 @@ trait FallingTile {
       
       case explosive: ExplosiveTile => List(Explode(Down, explosive.explodeTo))
       
+      case MagicWall => {
+        val otherKind = this match {
+          case _: BoulderTile => FallingDiamond
+          case _: DiamondTile => FallingBoulder
+          case _ => this
+        }
+        if (get(Down+Down).isEmpty) List(Become(otherKind), Move(Down + Down))
+        else List(Become(otherKind), Become(Space))
+      }
+      
       case _ => List(Become(tileAtRest))
     }
   }
+  
 
 }
