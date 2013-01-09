@@ -64,14 +64,14 @@ class DecoderSpec extends WordSpec with ShouldMatchers with MockitoSugar {
       
       //0x42, 0x01, 0x09, 0x1E, 0x02, 0x42, 0x09, 0x10, 0x1E, 0x02, 0x25, 0x03, 0x04, 0x04, 0x26, 0x12, 0xFF )
   
-  def setup() = {
-    val builder = mock[OriginalCaveData.Builder]
-    val random = mock[OriginalCaveData.Random]
-    val decoder = new OriginalCaveData.Decoder(builder, random)
-    (builder, decoder, random)
-  }
-      
   "Decoder" should {
+    def setup() = {
+      val builder = mock[OriginalCaveData.Builder]
+      val random = mock[OriginalCaveData.Random]
+      val decoder = new OriginalCaveData.Decoder(builder, random)
+      (builder, decoder, random)
+    }
+      
     "decode tile types" in {
       val (_, decoder, _) = setup()
       
@@ -113,10 +113,16 @@ class DecoderSpec extends WordSpec with ShouldMatchers with MockitoSugar {
       verify(builder).randomObjects_=( Array(base(0x18), base(0x19), base(0x1a), base(0x1b)) )
       verify(builder).randomObjectProb_=( Array(base(0x1c), base(0x1d), base(0x1e), base(0x1f)))
     }
+    "initialize random seed" in {
+      val (_, decoder, random) = setup()
+      decoder.decodeBase(base)
+
+      verify(random).seed(0, base(4))
+    }
     "set proper random object depending on return from random function" in {
       val (builder, decoder, random) = setup()
       
-      when(random.current).thenReturn(0xff).thenReturn(0x3b).thenReturn(0x31).thenReturn(0x08).thenReturn(0x00)
+      when(random.next).thenReturn(0xff).thenReturn(0x3b).thenReturn(0x31).thenReturn(0x08).thenReturn(0x00)
       when(builder.randomObjects).thenReturn(Array(base(0x18), base(0x19), base(0x1a), base(0x1b)))
       when(builder.randomObjectProb).thenReturn(Array(base(0x1c), base(0x1d), base(0x1e), base(0x1f)))
       
@@ -188,6 +194,88 @@ class DecoderSpec extends WordSpec with ShouldMatchers with MockitoSugar {
       verify(builder).drawSingle(1, 4, Diamond)
       verify(builder).drawLine(2, 5, 4, Delta(1, -1), SteelWall)
     }
+  }
+  
+  "Builder" should {
+    def setup() = new OriginalCaveData.Builder()
+    "draw a single tile" in {
+      val builder = setup()
+      builder.drawSingle(3, 4, Diamond)
+      val level = builder.build()
+      
+      level.get(3, 4) should be (Diamond)
+    } 
+    "draw a line" in {
+      val builder = setup()
+      builder.drawLine(1, 2, 3, Delta(1, 1), Boulder)
+      val level = builder.build()
+      
+      level.get(1, 2) should be (Boulder)
+      level.get(2, 3) should be (Boulder)
+      level.get(3, 4) should be (Boulder)
+      level.get(4, 5) should be (Space)
+    }
+    "draw a rectangle" in {
+      val builder = setup()
+      builder.drawRect(1, 2, 4, 5, Diamond)
+      val level = builder.build()
+      
+      level.get(1, 2) should be (Diamond)
+      level.get(2, 2) should be (Diamond)
+      level.get(3, 2) should be (Diamond)
+      level.get(4, 2) should be (Diamond)
+      
+      level.get(1, 3) should be (Diamond)
+      level.get(2, 3) should be (Space)
+      level.get(3, 3) should be (Space)
+      level.get(4, 3) should be (Diamond)
+
+      level.get(1, 4) should be (Diamond)
+      level.get(2, 4) should be (Space)
+      level.get(3, 4) should be (Space)
+      level.get(4, 4) should be (Diamond)
+
+      level.get(1, 5) should be (Diamond)
+      level.get(2, 5) should be (Space)
+      level.get(3, 5) should be (Space)
+      level.get(4, 5) should be (Diamond)
+      
+      level.get(1, 6) should be (Diamond)
+      level.get(2, 6) should be (Diamond)
+      level.get(3, 6) should be (Diamond)
+      level.get(4, 6) should be (Diamond)
+    } 
+    
+    "draw a filled rectangle" in {
+      val builder = setup()
+      builder.drawFilledRect(1, 2, 4, 5, Diamond, Boulder)
+      val level = builder.build()
+      
+      level.get(1, 2) should be (Diamond)
+      level.get(2, 2) should be (Diamond)
+      level.get(3, 2) should be (Diamond)
+      level.get(4, 2) should be (Diamond)
+      
+      level.get(1, 3) should be (Diamond)
+      level.get(2, 3) should be (Boulder)
+      level.get(3, 3) should be (Boulder)
+      level.get(4, 3) should be (Diamond)
+
+      level.get(1, 4) should be (Diamond)
+      level.get(2, 4) should be (Boulder)
+      level.get(3, 4) should be (Boulder)
+      level.get(4, 4) should be (Diamond)
+
+      level.get(1, 5) should be (Diamond)
+      level.get(2, 5) should be (Boulder)
+      level.get(3, 5) should be (Boulder)
+      level.get(4, 5) should be (Diamond)
+      
+      level.get(1, 6) should be (Diamond)
+      level.get(2, 6) should be (Diamond)
+      level.get(3, 6) should be (Diamond)
+      level.get(4, 6) should be (Diamond)
+    }         
   }
 
 }

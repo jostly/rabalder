@@ -77,6 +77,9 @@ object OriginalCaveData {
     "Interval 4"
   )
   
+  def level(i: Int): (String, String, Level) = 
+    (names(i), descriptions(i), decode(data(i)))
+  
   def decode(data: Array[Int]): Level = {
     val random = new RandomImpl()
     val builder = new Builder()
@@ -104,6 +107,7 @@ object OriginalCaveData {
       builder.caveTime             = data(14)
       builder.randomObjects        = Array(data(24), data(25), data(26), data(27))
       builder.randomObjectProb     = Array(data(28), data(29), data(30), data(31))
+      random.seed(0, data(4))
       this
     }
     
@@ -111,8 +115,7 @@ object OriginalCaveData {
       for (y <- 1 until height-1) {
         for (x <- 0 until width) {
           var tile: Tile = Dirt
-          random.next()
-          val r = random.current
+          val r = random.next()
           
           for (i <- 0 until builder.randomObjects.length) {
         	if (r < builder.randomObjectProb(i)) {
@@ -192,18 +195,42 @@ object OriginalCaveData {
   
   
   trait Random {
-    def next()
-    
-    def current: Int
+    def next(): Int
+    def seed(a: Int, b: Int)
   }
   
-  class RandomImpl extends Random {
-    private val rand = new scala.util.Random()
+  class RandomImpl extends Random {    
+    private var seed0 = 0
+    private var seed1 = 0
     
-    var current = 0
+    def seed(a: Int, b: Int) {
+      seed0 = a
+      seed1 = b
+    }
     
-    def next() {
-      current = rand.nextInt(256)
+    def next() = {
+      assert((seed0 >= 0) && (seed0 <= 0xFF), "expected seed 0 to be between 0 and 0xFF")
+      assert((seed1 >= 0) && (seed1 <= 0xFF), "expected seed 1 to be between 0 and 0xFF")
+
+      val tmp1 = (seed0 & 0x0001) * 0x0080
+      val tmp2 = (seed1 >> 1) & 0x007F
+
+      var result   = seed1 + (seed1 & 0x0001) * 0x0080
+      var carry    = if (result > 0x00FF) 1 else 0
+      result   = result & 0x00FF
+      result   = result + carry + 0x13
+      carry    = if (result > 0x00FF) 1 else 0
+      seed1 = result & 0x00FF
+      result   = seed0 + carry + tmp1
+      carry    = if (result > 0x00FF) 1 else 0
+      result   = result & 0x00FF
+      result   = result + carry + tmp2
+      seed0 = result & 0x00FF
+
+      assert((seed0 >= 0) && (seed0 <= 0xFF), "expected seed 0 to STILL be between 0 and 0xFF")
+      assert((seed1 >= 0) && (seed1 <= 0xFF), "expected seed 0 to STILL be between 0 and 0xFF")      
+      
+      seed0
     }
     
   }
@@ -264,7 +291,7 @@ object OriginalCaveData {
       drawRect(x, y, width, height, edge)
       for (dx <- 1 until width-1) {
         for (dy <- 1 until height-1) {
-          drawSingle(x, y, fill)
+          drawSingle(x + dx, y + dy, fill)
         }
       }
     }
