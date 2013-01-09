@@ -1,7 +1,7 @@
 Rabalder
 ========
 
-Version 0.1 (alpha)
+Version 0.2 (beta)
 
 Rabalder is a Boulder Dash clone, aiming to remain true to the C64 original game as far as game mechanics and level layout are concerned. To that end, I found this page http://www.elmerproductions.com/sp/peterb/ very useful. Thanks to those involved for putting it together.
 
@@ -14,12 +14,7 @@ This game was written as part of the One Game a Month challenge, http://www.oneg
 Building from source
 --------------------
 
-In order to build the game from these sources, you need
-
-1. Scala 2.9.2 and SBT 0.12.1 or later, see http://typesafe.com/stack/download
-2. libgdx 0.9.7 or later, see http://code.google.com/p/libgdx/
-
-Unpack the libgdx zip and place the jar-files in lib/, see lib/README
+In order to build the game from these sources, you need Scala 2.9.2 and SBT 0.12.1 or later, see http://typesafe.com/stack/download
 
 Use the ```assembly``` task in SBT to assemble a jar-file with everything needed to run the game.
 
