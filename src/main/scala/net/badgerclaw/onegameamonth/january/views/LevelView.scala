@@ -154,8 +154,9 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     } else {
       val timeLeft = level.caveTime - level.time
       val message = level.diamondsTaken.formatted("%02d") + "/" + 
-        level.diamondsNeeded.formatted("%02d") + "   " +
-        timeLeft.formatted("%03d") + "   " +
+        level.scorePerDiamond.formatted("%02d") + " " +
+        level.diamondsTaken.formatted("%02d") + "  " +
+        timeLeft.formatted("%03d") + " " +
         level.score.formatted("%06d")
         
 

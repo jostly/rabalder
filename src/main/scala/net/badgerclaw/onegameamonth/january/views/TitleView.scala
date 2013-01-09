@@ -22,6 +22,7 @@ import net.badgerclaw.onegameamonth.january.graphics.RenderContext
 import net.badgerclaw.onegameamonth.january.ResourceFactory
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import net.badgerclaw.onegameamonth.january.graphics.BigFont
 
 class TitleView(factory: ResourceFactory) extends View {
   
@@ -35,6 +36,10 @@ class TitleView(factory: ResourceFactory) extends View {
     context.batch.begin()
     
     context.batch.draw(textureRegion, 0f, 0f)
+    
+    BigFont.draw(context.batch, "BY JOHAN ÖSTLING", 32, 80)
+    
+    BigFont.draw(context.batch, "ANY KEY TO PLAY", 40, 140)
 
     context.batch.end()    
   }

@@ -69,6 +69,8 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   
   def amoebaShouldGrow: Boolean = randomFloat <= (if (time > slowGrowth) 0.25f else 0.03125f)
   
+  def scorePerDiamond = if (diamondsTaken > diamondsNeeded) extraDiamondsWorth else diamondsWorth
+  
   def randomDirection = random.nextInt(4) match {
     case 0 => Up
     case 1 => Right
@@ -177,9 +179,7 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
               (tile, get(rx, ry)) match {
                 case (_: PlayerCharacterTile, _: DiamondTile) => {
                   diamondsTaken += 1
-                  
-                  if (diamondsTaken > diamondsNeeded) score += extraDiamondsWorth
-                  else score += diamondsWorth                  
+                  score += scorePerDiamond
                 }
                 case _ =>
               }

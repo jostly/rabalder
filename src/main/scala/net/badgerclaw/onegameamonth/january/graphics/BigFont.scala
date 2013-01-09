@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 object BigFont {
   
   lazy val fontTextures = new Texture(Gdx.files.internal("graphics/font.png"))
-  lazy val charMap = "0123456789:;/()*ABCDEFGHIJKLMNOPQRSTUVWXYZ".zip(new TextureBag(fontTextures, 16, 16, 0, 0).toStream).toMap
+  lazy val charMap = "0123456789:;/()*ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ".zip(new TextureBag(fontTextures, 16, 16, 0, 0).toStream).toMap
 
   def draw(batch: SpriteBatch, message: String, x: Int, y: Int) {
     for (i <- 0 until message.length) {
