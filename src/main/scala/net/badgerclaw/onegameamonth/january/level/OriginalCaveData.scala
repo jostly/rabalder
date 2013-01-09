@@ -77,6 +77,19 @@ object OriginalCaveData {
     "Interval 4"
   )
   
+  def decode(data: Array[Int]): Level = {
+    val random = new RandomImpl()
+    val builder = new Builder()
+    val decoder = new Decoder(builder, random)
+    
+    decoder.decodeBase(data)
+    decoder.initRandomized()
+    decoder.createBorder()
+    decoder.decode(data.drop(32).toList)
+    
+    builder.build
+  }
+  
   class Decoder(builder: Builder, random: Random) {
     val width = 40
     val height = 22    
@@ -106,7 +119,7 @@ object OriginalCaveData {
         	  tile = decodeTile(builder.randomObjects(i))
         	}            
           }
-          builder.set(x, y, tile)
+          builder.drawSingle(x, y, tile)
         }
       }
       this
@@ -121,6 +134,7 @@ object OriginalCaveData {
       @tailrec
       def decodeLoop(d: List[Int]) {
         d match {
+          case 255 :: Nil =>
           case obj :: data => decodeLoop(decodeOne(obj, data))
           case Nil =>
         }
@@ -144,17 +158,20 @@ object OriginalCaveData {
     }
     
     def decodeTile(code: Int): Tile = code match {
+      case 0x00   => Space
       case 0x01 => Dirt
       case 0x02 => Wall
       //case 0x03 => MagicWall
+      case 0x04 => PreExit
       case 0x07 => SteelWall
       case 0x08 => Firefly(Left)
       case 0x10 => Boulder
       case 0x14 => Diamond
       case 0x30 => Butterfly(Down)
+      case 0x25 => PlayerCharacter
       case 0x38 => PlayerCharacter
       case 0x3A => Amoeba
-      case _    => Space
+      case _ => throw new UnsupportedOperationException("Can't decode 0x" + code.toHexString + " to a tile")
     }
     
     def decodeDirection(dir: Int): Offset = {
@@ -180,7 +197,20 @@ object OriginalCaveData {
     def current: Int
   }
   
+  class RandomImpl extends Random {
+    private val rand = new scala.util.Random()
+    
+    var current = 0
+    
+    def next() {
+      current = rand.nextInt(256)
+    }
+    
+  }
+  
   class Builder {
+    
+    private val level = new Level()
     
     var amoebaSlowGrowthTime = 0
     var magicWallMillingTime = 0
@@ -192,24 +222,51 @@ object OriginalCaveData {
     var randomObjects        = Array[Int]()
     var randomObjectProb     = Array[Int]()
     
-    def set(x: Int, y: Int, tile: Tile) {
-      
+    private def setParams() {
+      level.slowGrowth = amoebaSlowGrowthTime
+      level.diamondsWorth = initialDiamondValue
+      level.caveTime = caveTime
+    }
+    
+    def build() = {
+      setParams()
+      level
     }
     
     def drawRect(x: Int, y: Int, width: Int, height: Int, tile: Tile) {
-      
+      for(dx <- 0 until width) {
+        drawSingle(x+dx, y, tile)
+        drawSingle(x+dx, y+height-1, tile)
+      }
+      for (dy <- 1 until height-1) {
+        drawSingle(x, y+dy, tile)
+        drawSingle(x+width-1, y+dy, tile)
+      }
     }
     
     def drawSingle(x: Int, y: Int, tile: Tile) {
-      
+      assert(x >= 0 && x < 40, "x must be [0, 40[, was: " + x)
+      assert(y >= 0 && y < 22, "y must be [0, 22[, was: " + y)
+      level.set(x, y)(tile)
     }
     
     def drawLine(x: Int, y: Int, length: Int, direction: Offset, tile: Tile) {
-      
+      var lx = x
+      var ly = y
+      for (d <- 0 until length) {
+        drawSingle(lx, ly, tile)
+        lx += direction.dx
+        ly += direction.dy
+      }
     }
     
     def drawFilledRect(x: Int, y: Int, width: Int, height: Int, edge: Tile, fill: Tile) {
-      
+      drawRect(x, y, width, height, edge)
+      for (dx <- 1 until width-1) {
+        for (dy <- 1 until height-1) {
+          drawSingle(x, y, fill)
+        }
+      }
     }
   }
 }

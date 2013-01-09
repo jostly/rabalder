@@ -189,7 +189,8 @@ Wdd..wwwwwwwwwwwwwdrrrdddwwwwwwwwwwwwwdW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""    
     
     
-  var levels = List(cave1, cave2, cave3, cave4, cave7, cave9)  
+  //var levels = List(cave1, cave2, cave3, cave4, cave7, cave9)
+    var levels = OriginalCaveData.data
     
   val resourceFactory: ResourceFactory = new ResourceFactory() {
     override def loadTexture(filename: String) = new Texture(Gdx.files.internal(filename))
@@ -262,7 +263,8 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
     case Title => setViewController(new TitleView(resourceFactory) , new TitleController(this))
     case StartLevel => levels match {
       case x :: xs => {
-        val level = Level(x)
+        //val level = Level(x)
+        val level = OriginalCaveData.decode(x)
         setViewController(new LevelView(resourceFactory, level), new LevelController(level)(this))
         music.setVolume(0.1f)
       }

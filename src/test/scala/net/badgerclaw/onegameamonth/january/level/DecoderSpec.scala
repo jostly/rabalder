@@ -122,11 +122,11 @@ class DecoderSpec extends WordSpec with ShouldMatchers with MockitoSugar {
       
       decoder.initRandomized()
       
-      verify(builder).set(0, 1, Dirt)
-      verify(builder).set(1, 1, Space)
-      verify(builder).set(2, 1, Boulder)
-      verify(builder).set(3, 1, Diamond)
-      verify(builder).set(4, 1, Butterfly(Down))
+      verify(builder).drawSingle(0, 1, Dirt)
+      verify(builder).drawSingle(1, 1, Space)
+      verify(builder).drawSingle(2, 1, Boulder)
+      verify(builder).drawSingle(3, 1, Diamond)
+      verify(builder).drawSingle(4, 1, Butterfly(Down))
       
       verify(random, times(800)).next()
     }
