@@ -154,7 +154,8 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
       val timeLeft = level.caveTime - level.time
       level.diamondsTaken.formatted("%02d") + "/" + 
         level.diamondsNeeded.formatted("%02d") + "   " +
-        timeLeft.formatted("%03d")
+        timeLeft.formatted("%03d") + "  " +
+        level.score.formatted("%06d")
     }
     
     font.draw(context.batch, message, 2, 2) 

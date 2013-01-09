@@ -252,7 +252,9 @@ object OriginalCaveData {
     private def setParams() {
       level.slowGrowth = amoebaSlowGrowthTime
       level.diamondsWorth = initialDiamondValue
+      level.extraDiamondsWorth = extraDiamondValue
       level.caveTime = caveTime
+      level.diamondsNeeded = diamondsNeeded
     }
     
     def build() = {

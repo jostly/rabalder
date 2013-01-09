@@ -36,6 +36,8 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   var caveTime = 150
   var ticksElapsed = 0
   
+  var score: Int = 0
+  
   def time = ticksElapsed / 10
   
   var events: List[Event] = List.empty
@@ -165,6 +167,9 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
               (tile, get(rx, ry)) match {
                 case (_: PlayerCharacterTile, _: DiamondTile) => {
                   diamondsTaken += 1
+                  
+                  if (diamondsTaken > diamondsNeeded) score += extraDiamondsWorth
+                  else score += diamondsWorth                  
                 }
                 case _ =>
               }

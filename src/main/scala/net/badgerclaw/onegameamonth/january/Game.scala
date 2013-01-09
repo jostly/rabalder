@@ -54,6 +54,8 @@ class Game extends ApplicationListener with RenderContext with ControllerContext
   var view: View = DefaultView
   var controller: Controller = DefaultController
   
+  var score: Int = 0
+  var currentLevel: Level = _
   
   def create() {
     music.setVolume(0.4f)
@@ -117,13 +119,15 @@ class Game extends ApplicationListener with RenderContext with ControllerContext
     case Title => setViewController(new TitleView(resourceFactory) , new TitleController(this))
     case StartLevel => levels match {
       case x :: xs => {
-        val level = OriginalCaveData.decode(x)
-        setViewController(new LevelView(resourceFactory, level), new LevelController(level)(this))
+        currentLevel = OriginalCaveData.decode(x)
+        currentLevel.score = score
+        setViewController(new LevelView(resourceFactory, currentLevel), new LevelController(currentLevel)(this))
         music.setVolume(0.1f)
       }
       case _ => forward(GameExit)
     }
     case WinLevel => {
+      score = currentLevel.score
       levels = levels.tail
       forward(StartLevel)
     }
