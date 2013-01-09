@@ -28,7 +28,7 @@ object OneGameAMonthBuild extends Build {
       "org.scalatest" %% "scalatest" % "2.0.M5" % "test",
       "org.mockito" % "mockito-all" % "1.9.5" % "test"
     ),
-    version := "0.2",
+    version := "1.0-SNAPSHOT",
     scalaVersion := "2.9.2"
   )
 
