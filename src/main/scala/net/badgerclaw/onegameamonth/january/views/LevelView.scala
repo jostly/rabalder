@@ -160,7 +160,7 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
         level.score.formatted("%06d")
         
 
-      BigFont.draw(context.batch, message, 0, 0)
+      BigYellowFont.draw(context.batch, message, 0, 0)
 //    }
     
         

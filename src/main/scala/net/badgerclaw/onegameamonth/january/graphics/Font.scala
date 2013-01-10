@@ -22,9 +22,9 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-object BigFont {
+class Font(fontFilename: String) {
   
-  lazy val fontTextures = new Texture(Gdx.files.internal("graphics/font.png"))
+  lazy val fontTextures = new Texture(Gdx.files.internal(fontFilename))  
   lazy val charMap = "0123456789:;/()*ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ^v<>".zip(new TextureBag(fontTextures, 16, 16, 0, 0).toStream).toMap
 
   def draw(batch: SpriteBatch, message: String, x: Int, y: Int) {
@@ -41,5 +41,9 @@ object BigFont {
   def dispose() {
     fontTextures.dispose()
   }
-
+  
 }
+
+object BigYellowFont extends Font("graphics/font.png")
+
+object BigWhiteFont extends Font("graphics/font_white.png")

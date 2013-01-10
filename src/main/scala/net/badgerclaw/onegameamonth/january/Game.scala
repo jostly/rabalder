@@ -103,7 +103,8 @@ class Game extends ApplicationListener with RenderContext with ControllerContext
     
     batch.dispose() 
     
-    BigFont.dispose()
+    BigYellowFont.dispose()
+    BigWhiteFont.dispose()
     
     music.stop()
     music.dispose()
