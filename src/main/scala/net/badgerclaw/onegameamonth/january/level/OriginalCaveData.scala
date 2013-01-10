@@ -166,7 +166,7 @@ object OriginalCaveData {
     }
     
     def decodeTile(code: Int): Tile = code match {
-      case 0x00   => Space
+      case 0x00 => Space
       case 0x01 => Dirt
       case 0x02 => Wall
       case 0x03 => MagicWall
@@ -176,6 +176,7 @@ object OriginalCaveData {
       case 0x10 => Boulder
       case 0x14 => Diamond
       case 0x30 => Butterfly(Down)
+      case 0x32 => Butterfly(Up)
       case 0x25 => PlayerCharacter
       case 0x38 => PlayerCharacter
       case 0x3A => Amoeba

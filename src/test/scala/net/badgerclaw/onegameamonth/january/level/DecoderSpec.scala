@@ -84,6 +84,7 @@ class DecoderSpec extends WordSpec with ShouldMatchers with MockitoSugar {
       decoder.decodeTile(0x10) should be (Boulder)
       decoder.decodeTile(0x14) should be (Diamond)
       decoder.decodeTile(0x30) should be (Butterfly(Down))
+      decoder.decodeTile(0x32) should be (Butterfly(Up))
       decoder.decodeTile(0x38) should be (PlayerCharacter)
       decoder.decodeTile(0x3A) should be (Amoeba)
     }
