@@ -41,6 +41,8 @@ class TitleView(factory: ResourceFactory, controller: TitleController) extends V
     
     BigFont.draw(context.batch, "BY JOHAN ÖSTLING", 32, 80)
     
+    BigFont.draw(context.batch, "^v TO SELECT LEVEL", 16, 120)
+    
     val selected = controller.selected.formatted("%02d") + ": " + OriginalCaveData.names(controller.selected-1).toUpperCase()
     val len = selected.length * 16
     
