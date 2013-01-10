@@ -23,8 +23,10 @@ import net.badgerclaw.onegameamonth.january.ResourceFactory
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import net.badgerclaw.onegameamonth.january.graphics.BigFont
+import net.badgerclaw.onegameamonth.january.controllers.TitleController
+import net.badgerclaw.onegameamonth.january.level.OriginalCaveData
 
-class TitleView(factory: ResourceFactory) extends View {
+class TitleView(factory: ResourceFactory, controller: TitleController) extends View {
   
   val texture = factory.loadTexture("graphics/title.png")
   val textureRegion = new TextureRegion(texture, texture.getWidth(), texture.getHeight())
@@ -39,7 +41,12 @@ class TitleView(factory: ResourceFactory) extends View {
     
     BigFont.draw(context.batch, "BY JOHAN ÖSTLING", 32, 80)
     
-    BigFont.draw(context.batch, "ANY KEY TO PLAY", 40, 140)
+    val selected = controller.selected.formatted("%02d") + ": " + OriginalCaveData.names(controller.selected-1).toUpperCase()
+    val len = selected.length * 16
+    
+    BigFont.draw(context.batch, selected, (320 - len) / 2, 140)
+    
+    BigFont.draw(context.batch, "SPACE TO PLAY", 56, 200)
 
     context.batch.end()    
   }

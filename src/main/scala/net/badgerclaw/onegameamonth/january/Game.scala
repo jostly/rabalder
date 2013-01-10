@@ -118,7 +118,10 @@ class Game extends ApplicationListener with RenderContext with ControllerContext
   }
   
   def forward(state: State) = state match {
-    case Title => setViewController(new TitleView(resourceFactory) , new TitleController(this))
+    case Title => {
+      val controller = new TitleController(this)
+      setViewController(new TitleView(resourceFactory, controller), controller)
+    }
     case BeginPlay(level) => {
       levels = OriginalCaveData.data.drop(level-1)
       forward(StartLevel)

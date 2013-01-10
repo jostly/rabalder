@@ -20,11 +20,22 @@ package net.badgerclaw.onegameamonth.january.controllers
 
 import com.badlogic.gdx.InputAdapter
 import net.badgerclaw.onegameamonth.january.state._
+import com.badlogic.gdx.Input.Keys
+import net.badgerclaw.onegameamonth.january.level.OriginalCaveData
 
 class TitleController(context: ControllerContext) extends InputAdapter with Controller {
+  
+  var selected: Int = 1
 
   override def keyUp(key: Int): Boolean = {
-    context.forward(BeginPlay(1))
+    key match {
+      case Keys.SPACE => context.forward(BeginPlay(selected))
+      case Keys.ENTER => context.forward(BeginPlay(selected))
+      case Keys.DOWN if (selected < OriginalCaveData.data.length) => selected += 1
+      case Keys.UP if (selected > 1) => selected -= 1
+      case _ => 
+    }
+    
     true
   }
   
