@@ -256,6 +256,36 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         
       }
     }
+    "ESC is pressed" should {
+      "decrease time remaining by 1 per tick" in {
+        val context = mock[ControllerContext]
+        val level = mock[Level]
+        when(level.playerWon).thenReturn(false)
+        when(level.finished).thenReturn(false)
+
+        val controller = new LevelController(level)(context)
+        controller.keyDown(Keys.ESCAPE)
+        
+        controller.tick()
+        
+        verify(level).addTime(1)
+      }
+    }
+    "ESC is not pressed" should {
+      "NOT decrease time remaining by 1 per tick" in {
+        val context = mock[ControllerContext]
+        val level = mock[Level]
+        when(level.playerWon).thenReturn(false)
+        when(level.finished).thenReturn(false)
+
+        val controller = new LevelController(level)(context)
+        
+        controller.tick()
+        
+        verify(level, never()).addTime(1)
+      }
+    }
+    
   }
   
 }

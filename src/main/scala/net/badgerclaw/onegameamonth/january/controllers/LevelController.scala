@@ -30,6 +30,7 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
   private var ticksLeftOnMove = 0
   final val ticksToMove = 6
   private var removing = false
+  private var escaping = false
   
   override def tick() {
     if (level.playerWon) {
@@ -39,6 +40,8 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
       } else {
         context.forward(WinLevel)
       }
+    } else if (!level.finished && escaping) {
+      level.addTime(1)
     }
     if (ticksLeftOnMove > 0) {
       ticksLeftOnMove = ticksLeftOnMove - 1
@@ -77,6 +80,7 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
     case Keys.SPACE => setSpace(state)
     case Keys.SHIFT_LEFT => setSpace(state)
     case Keys.SHIFT_RIGHT => setSpace(state)
+    case Keys.ESCAPE => escaping = state; true
     case Keys.ENTER if (state == false && level.finished && !level.playerWon) => {
       context.forward(StartLevel)
       true 
