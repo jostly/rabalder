@@ -45,7 +45,7 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   
   var score: Int = 0
   
-  def time = ticksElapsed / 10
+  def time: Int = math.min(ticksElapsed / 10, caveTime)
   
   var events: List[Event] = List.empty
   
