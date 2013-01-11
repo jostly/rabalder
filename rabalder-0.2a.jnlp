@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+" codebase=
 "http://jostly.github.com/rabalder" 
-    href="rabalder.jnlp">
+    href="rabalder-0.2a.jnlp">
     <information>
         <title>Rabalder Webstart</title>
         <vendor>jostly</vendor>
