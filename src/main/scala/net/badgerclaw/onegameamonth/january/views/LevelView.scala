@@ -60,6 +60,8 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     Dirt -> tilesBag.extract(3, 1),
     Wall -> tilesBag.extract(1, 0),
     SteelWall -> tilesBag.extract(7, 0),
+    MagicWall -> tilesBag.extract(1, 0),
+    ActiveMagicWall -> tilesBag.extract(0, 7, width = 4, height = 1),
     Boulder -> tilesBag.extract(2, 1),
     Diamond -> tilesBag.extract(0, 5, width = 8, height = 1),
     Butterfly(Left) -> butterfly,

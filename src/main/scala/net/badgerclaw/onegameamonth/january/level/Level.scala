@@ -43,7 +43,8 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   
   var magicWallExpirationTime = -1
   
-  def magicWallHasExpired = (magicWallExpirationTime >= 0 && magicWallExpirationTime <= time)
+  def magicWallHasExpired: Boolean = (magicWallExpirationTime >= 0 && magicWallExpirationTime <= time)
+  def magicWallIsActive:   Boolean = (magicWallExpirationTime > time)
   
   var score: Int = 0
   
@@ -166,7 +167,9 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
               }
               if ((tile == FallingBoulder && what == FallingDiamond) || 
                   (tile == FallingDiamond && what == FallingBoulder)) {
-                magicWallExpirationTime = time + magicWallMillingTime
+                if (magicWallExpirationTime < 0) {
+                  magicWallExpirationTime = time + magicWallMillingTime                  
+                }
                 addEvent(Transformed(tile, what))
               }
             }

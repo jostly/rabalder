@@ -29,20 +29,37 @@ import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
 import action._
 
 class MagicWallSpec extends WordSpec with ShouldMatchers with MockitoSugar {
-  
+
   "A MagicWall" should {
+    "do nothing if magic walls are not active" in {
+      val level = mock[ReadOnlyLevel]
+      when(level.magicWallIsActive).thenReturn(false)
+      
+      MagicWall.act(3, 3, level) should be (Seq.empty)
+
+    }
+    "become an ActiveMagicWall if magic walls are active" in {
+      val level = mock[ReadOnlyLevel]
+      when(level.magicWallIsActive).thenReturn(true)
+      
+      MagicWall.act(3, 3, level) should be (Seq(Become(ActiveMagicWall)))
+
+    }
+  }
+  
+  "An active MagicWall" should {
     "do nothing if magic walls have not expired" in {
       val level = mock[ReadOnlyLevel]
       when(level.magicWallHasExpired).thenReturn(false)
       
-      MagicWall.act(3, 3, level) should be (Seq.empty)
+      ActiveMagicWall.act(3, 3, level) should be (Seq.empty)
 
     }
     "become a Wall if magic walls have expired" in {
       val level = mock[ReadOnlyLevel]
       when(level.magicWallHasExpired).thenReturn(true)
       
-      MagicWall.act(3, 3, level) should be (Seq(Become(Wall)))
+      ActiveMagicWall.act(3, 3, level) should be (Seq(Become(Wall)))
 
     }
   }

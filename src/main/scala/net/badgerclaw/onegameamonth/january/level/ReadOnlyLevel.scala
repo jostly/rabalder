@@ -41,4 +41,6 @@ trait ReadOnlyLevel {
   def playerAction: Option[PlayerAction]
   
   def magicWallHasExpired: Boolean
+  
+  def magicWallIsActive: Boolean
 }

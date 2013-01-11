@@ -293,7 +293,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       
       level.diamondsTaken should be (1)
     }
-    "a FallingBoulder turning into a FallingDiamond should activate magic walls" in {
+    "activate magic walls when a FallingBoulder turns into a FallingDiamond" in {
       val level = new Level()
       
       level.set(2,2)(FallingBoulder)
@@ -302,12 +302,12 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.tick()
       
       level.get(2, 2) should be (Space)
-      level.get(2, 3) should be (MagicWall)
+      level.get(2, 3) should be (ActiveMagicWall)
       level.get(2, 4) should be (FallingDiamond)
       
       level.magicWallExpirationTime should be (level.time + level.magicWallMillingTime)
     }
-    "a FallingBoulder falling into a magic wall should activate magic walls" in {
+    "activate magic walls when a FallingBoulder falls into a magic wall" in {
       val level = new Level()
       
       level.set(2,2)(FallingBoulder)
@@ -317,12 +317,12 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.tick()
       
       level.get(2, 2) should be (Space)
-      level.get(2, 3) should be (MagicWall)
+      level.get(2, 3) should be (ActiveMagicWall)
       level.get(2, 4) should be (Dirt)
       
       level.magicWallExpirationTime should be (level.time + level.magicWallMillingTime)
     }    
-    "a FallingDiamond turning into a FallingBoulder should activate magic walls" in {
+    "activate magic walls when a FallingDiamond turns into a FallingBoulder" in {
       val level = new Level()
       
       level.set(2,2)(FallingDiamond)
@@ -331,12 +331,12 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.tick()
       
       level.get(2, 2) should be (Space)
-      level.get(2, 3) should be (MagicWall)
+      level.get(2, 3) should be (ActiveMagicWall)
       level.get(2, 4) should be (FallingBoulder)
       
       level.magicWallExpirationTime should be (level.time + level.magicWallMillingTime)
     }    
-    "a FallingDiamond falling into a magic wall should activate magic walls" in {
+    "activate magic walls when a FallingDiamond falls into a magic wall" in {
       val level = new Level()
       
       level.set(2,2)(FallingDiamond)
@@ -346,11 +346,27 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.tick()
       
       level.get(2, 2) should be (Space)
-      level.get(2, 3) should be (MagicWall)
+      level.get(2, 3) should be (ActiveMagicWall)
       level.get(2, 4) should be (Dirt)
       
       level.magicWallExpirationTime should be (level.time + level.magicWallMillingTime)
     }
+    "not reset expiration time if magic walls have been activated" in {
+      val level = new Level()
+      
+      level.addTime(3)
+      
+      level.magicWallMillingTime = 5
+      level.magicWallExpirationTime = 5
+      
+      level.set(2,2)(FallingDiamond)
+      level.set(2,3)(ActiveMagicWall)
+      level.set(2,4)(Dirt)
+      
+      level.tick()
+      
+      level.magicWallExpirationTime should be (5)
+    }    
     "mark magic walls as inactive if they've been activated and the milling time has passed" in {
       val level = new Level()
       level.magicWallExpirationTime = 0

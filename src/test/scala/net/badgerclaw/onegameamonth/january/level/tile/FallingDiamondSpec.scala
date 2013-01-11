@@ -183,7 +183,25 @@ class FallingDiamondSpec extends WordSpec with ShouldMatchers with MockitoSugar 
         
         FallingDiamond.act(3, 3, level) should be(Seq(Become(FallingBoulder), Become(Space)))
       }
-    }    
+    }
+    "above an active magic wall" should {
+      "turn into a boulder and move two down" in {
+        val level = mock[ReadOnlyLevel]
+        
+        when(level.get(3,4)).thenReturn(ActiveMagicWall)
+        when(level.get(3,5)).thenReturn(Space)
+        
+        FallingDiamond.act(3, 3, level) should be(Seq(Become(FallingBoulder), Move(Down+Down)))
+      }
+      "turn into a boulder and then disappear if the underside of the wall is blocked" in {
+        val level = mock[ReadOnlyLevel]
+        
+        when(level.get(3,4)).thenReturn(ActiveMagicWall)
+        when(level.get(3,5)).thenReturn(Dirt)
+        
+        FallingDiamond.act(3, 3, level) should be(Seq(Become(FallingBoulder), Become(Space)))
+      }
+    }     
   }
 
 }

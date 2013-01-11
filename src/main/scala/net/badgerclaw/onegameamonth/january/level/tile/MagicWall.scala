@@ -24,7 +24,15 @@ import net.badgerclaw.onegameamonth.january.level.ReadOnlyLevel
 object MagicWall extends MagicWallTile with ActionTile {
   
   override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = 
-    if (level.magicWallHasExpired) List(Become(Wall))
+    if (level.magicWallIsActive) List(Become(ActiveMagicWall))
     else List.empty
 
+}
+
+object ActiveMagicWall extends MagicWallTile with ActionTile {
+  
+  override def act(x: Int, y: Int, level: ReadOnlyLevel): Seq[Action] = 
+    if (level.magicWallHasExpired) List(Become(Wall))
+    else List.empty
+  
 }
