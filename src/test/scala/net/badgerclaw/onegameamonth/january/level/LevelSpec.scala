@@ -366,15 +366,21 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.tick()
       
       level.finished should be (true)
+      level.playerWon should be (false)
       
     }
-    "mark the level as finished if time runs out" in {
+    "mark the level as finished and remove the player if time runs out" in {
       val level = new Level()
-      level.caveTime = 0
+      level.caveTime = 10
+      level.set(3, 3)(PlayerCharacter)
+      
+      level.addTime(11)
       
       level.tick()
       
       level.finished should be (true)
+      level.playerWon should be (false)
+      level.get(3, 3) should not be (PlayerCharacter)
     }
     "mark the level as finished if the player moves onto the exit" in {
       
@@ -388,6 +394,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"""
       level.tick()
       
       level.finished should be (true)
+      level.playerWon should be (true)
       
     }
   }

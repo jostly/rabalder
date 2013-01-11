@@ -61,7 +61,9 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   
   private var lastKnownPlayerPosition = (0, 0)
   
-  def playerWon: Boolean = finished && playerExists && time <= caveTime
+  private var playerWentIntoExit = false
+  
+  def playerWon: Boolean = playerWentIntoExit
   
   private val random = new Random()
   
@@ -151,6 +153,7 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
               exclude(tx, ty)
               if (current == PlayerCharacterExited && destination == Exit) {
                 finished = true
+                playerWentIntoExit = true
               }
             }
             case Become(what) => {
@@ -210,12 +213,18 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
     }
     if (!finished) {
       ticksElapsed += 1
-    }
-    if (time >= caveTime) {
-      finished = true
+      if (time >= caveTime) {
+        finished = true
+      }
     }
     if (lastAmoebaCount >= 200) amoebaTooLarge = true
     amoebaCanGrow = amoebaCouldGrow
+    if (finished && !playerWon) {
+      val pc = findPlayer()
+      if (pc != (-1, -1)) {
+        set(pc._1, pc._2)(Explosion(1, Space))
+      }
+    }
   }
   
   def toDebugString = {

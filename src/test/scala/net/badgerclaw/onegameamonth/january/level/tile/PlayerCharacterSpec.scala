@@ -352,7 +352,4 @@ class PlayerCharacterSpec extends WordSpec with ShouldMatchers with MockitoSugar
       }
     }
   }
-  
-  // TODO! Moving onto exit
-
 }

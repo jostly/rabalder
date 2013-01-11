@@ -40,7 +40,7 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
       } else {
         context.forward(WinLevel)
       }
-    } else if (!level.finished && escaping) {
+    } else if (escaping && !level.finished) {
       level.addTime(1)
     }
     if (ticksLeftOnMove > 0) {

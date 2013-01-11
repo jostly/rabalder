@@ -253,7 +253,19 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         
         verify(level).addScore(3)
         verify(level).addTime(1)
+      }
+      "forward to WinLevel when time is up" in {
+        val context = mock[ControllerContext]
+        val level = mock[Level]
+        when(level.playerWon).thenReturn(true)
+        when(level.time).thenReturn(80)
+        when(level.caveTime).thenReturn(80)
         
+        val controller = new LevelController(level)(context)
+        
+        controller.tick()
+        
+        verify(context).forward(WinLevel)
       }
     }
     "ESC is pressed" should {
