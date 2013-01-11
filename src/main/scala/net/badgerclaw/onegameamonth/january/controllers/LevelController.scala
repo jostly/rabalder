@@ -59,6 +59,7 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
     if (state) level.playerAction = Some(action(direction))
     else if (level.playerAction == Some(Move(direction)) || level.playerAction == Some(Remove(direction))) level.playerAction = None    
     
+    level.aboutToQuit = false
     true
   }
   
@@ -69,6 +70,7 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
       case Some(Remove(dir: Direction)) if (!removing) => level.playerAction = Some(Move(dir))
       case _ =>
     }
+    level.aboutToQuit = false
     true
   }
     
@@ -80,12 +82,28 @@ class LevelController(level: Level)(implicit context: ControllerContext) extends
     case Keys.SPACE => setSpace(state)
     case Keys.SHIFT_LEFT => setSpace(state)
     case Keys.SHIFT_RIGHT => setSpace(state)
-    case Keys.ESCAPE => escaping = state; true
+    case Keys.BACKSPACE => {
+      escaping = state
+      
+      level.aboutToQuit = false
+      true 
+    }
+    case Keys.ESCAPE => {
+      if (state == false && !level.finished) {
+        if (level.aboutToQuit) context.forward(Title)
+        else level.aboutToQuit = true
+      }
+      
+      true
+    }
     case Keys.ENTER if (state == false && level.finished && !level.playerWon) => {
       context.forward(StartLevel)
       true 
     } 
-    case _ => false
+    case _ => {
+      level.aboutToQuit = false
+      false
+    }
   } 
     
   override def keyDown(key: Int): Boolean = handleKey(key, true)

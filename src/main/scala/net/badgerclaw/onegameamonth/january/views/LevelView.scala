@@ -142,12 +142,16 @@ class LevelView(factory: ResourceFactory, level: Level) extends View {
     context.batch.draw(scoreBoxTexture, 0, 0, 320, 16)
         
     val timeLeft = level.caveTime - level.time
-        
-    BigYellowFont.draw(context.batch, level.diamondsNeeded.formatted("%02d"), 0, 0)
-    BigWhiteFont.draw(context.batch, "/" + level.scorePerDiamond.formatted("%02d"), 32, 0)
-    BigYellowFont.draw(context.batch, level.diamondsTaken.formatted("%02d"), 96, 0)
-    BigWhiteFont.draw(context.batch, timeLeft.formatted("%03d") + " " +
-      level.score.formatted("%06d"), 160, 0)
+    
+    if (level.aboutToQuit) {
+      BigWhiteFont.draw(context.batch, "*PRESS ESC TO QUIT!*", 0, 0)
+    } else {
+      BigYellowFont.draw(context.batch, level.diamondsNeeded.formatted("%02d"), 0, 0)
+      BigWhiteFont.draw(context.batch, "/" + level.scorePerDiamond.formatted("%02d"), 32, 0)
+      BigYellowFont.draw(context.batch, level.diamondsTaken.formatted("%02d"), 96, 0)
+      BigWhiteFont.draw(context.batch, timeLeft.formatted("%03d") + " " +
+        level.score.formatted("%06d"), 160, 0)
+    }
         
     context.batch.end()
 

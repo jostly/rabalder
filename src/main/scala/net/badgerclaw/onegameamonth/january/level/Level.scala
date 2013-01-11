@@ -39,6 +39,8 @@ class Level(data: Array[Tile]) extends ReadOnlyLevel {
   
   var ticksElapsed = 0
   
+  var aboutToQuit = false
+  
   var magicWallExpirationTime = -1
   
   def magicWallHasExpired = (magicWallExpirationTime >= 0 && magicWallExpirationTime <= time)

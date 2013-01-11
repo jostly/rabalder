@@ -268,7 +268,7 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         verify(context).forward(WinLevel)
       }
     }
-    "ESC is pressed" should {
+    "BACKSPACE is pressed" should {
       "decrease time remaining by 1 per tick" in {
         val context = mock[ControllerContext]
         val level = mock[Level]
@@ -276,14 +276,14 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         when(level.finished).thenReturn(false)
 
         val controller = new LevelController(level)(context)
-        controller.keyDown(Keys.ESCAPE)
+        controller.keyDown(Keys.BACKSPACE)
         
         controller.tick()
         
         verify(level).addTime(1)
       }
     }
-    "ESC is not pressed" should {
+    "BACKSPACE is not pressed" should {
       "NOT decrease time remaining by 1 per tick" in {
         val context = mock[ControllerContext]
         val level = mock[Level]
@@ -295,6 +295,41 @@ class LevelControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar
         controller.tick()
         
         verify(level, never()).addTime(1)
+      }
+    }
+    "ESCAPE is typed" should {
+      "set aboutToQuit in level the first time" in {
+        val context = mock[ControllerContext]
+        val level = mock[Level]
+
+        val controller = new LevelController(level)(context)
+        controller.keyUp(Keys.ESCAPE)
+        
+        verify(level).aboutToQuit_=(true)
+      }
+      "forward to Title the second time" in {
+        val context = mock[ControllerContext]
+        val level = mock[Level]
+
+        when(level.aboutToQuit).thenReturn(true)
+        
+        val controller = new LevelController(level)(context)
+        controller.keyUp(Keys.ESCAPE)
+        
+        verify(context).forward(Title)
+      }
+      "reset aboutToQuit if something else is pressed" in {
+        val context = mock[ControllerContext]
+        val level = mock[Level]
+
+        val controller = new LevelController(level)(context)
+        controller.keyUp(Keys.ESCAPE)
+        
+        verify(level).aboutToQuit_=(true)
+        
+        controller.keyDown(Keys.LEFT)
+            
+        verify(level).aboutToQuit_=(false)
       }
     }
     
