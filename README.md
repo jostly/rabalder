@@ -1,7 +1,7 @@
 Rabalder
 ========
 
-Version 0.2 (beta)
+Version 1.0
 
 Rabalder is a Boulder Dash clone, aiming to remain true to the C64 original game as far as game mechanics and level layout are concerned. To that end, I found this page http://www.elmerproductions.com/sp/peterb/ very useful. Thanks to those involved for putting it together.
 
@@ -9,6 +9,14 @@ Rabalder is a Boulder Dash clone, aiming to remain true to the C64 original game
 This game was written as part of the One Game a Month challenge, http://www.onegameamonth.com
 
 
+How to play
+-----------
+
+Move with arrow keys. Hold down shift or space with an arrow key to stand still and remove blocks in that direction.
+
+Hold Backspace to accelerate time (use to restart a level if you're trapped)
+
+Press Escape twice to quit to title screen
 
 
 Building from source
