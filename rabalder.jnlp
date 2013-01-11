@@ -10,12 +10,12 @@
         <!-- Application Resources -->
         <j2se version="1.6+"
               href="http://java.sun.com/products/autodl/j2se"/>
-        <jar href="app/rabalder-0.2.jar"
+        <jar href="app/rabalder-0.2a.jar"
             main="true" />
 
     </resources>
     <application-desc
-         name="Dynamic Tree Demo Application"
+         name="Rabalder"
          main-class=
            "net.badgerclaw.onegameamonth.january.Main"
          width="800"
