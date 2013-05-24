@@ -1,5 +1,5 @@
-Rabalder
-========
+# Rabalder [![Build Status](https://travis-ci.org/jostly/rabalder.png)](https://travis-ci.org/jostly/rabalder)
+
 
 Version 1.0
 
